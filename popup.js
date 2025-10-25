@@ -198,7 +198,7 @@ async function summarize(prompt) {
 }
 
 async function shortSummarize(prompt) {
-    return await askGemini(`Summarize the most important parts of this text; be brief:\n\n${prompt}`);
+    return await askGemini(`Summarize the most important parts of this text in 3 sentances:\n\n${prompt}`);
 }
 
 function stripMarkdown(text) {
