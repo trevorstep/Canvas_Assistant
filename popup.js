@@ -171,6 +171,7 @@ async function askGemini(prompt) {
     return data.result || "";
 }
 
+
 async function summarize(prompt) {
     return await askGemini(`Summarize the most important parts of this text:\n\n${prompt}`);
 }
