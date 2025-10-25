@@ -163,9 +163,10 @@ async function summarize(prompt) {
 }
 
 function stripMarkdown(text) {
-    return text
-        .replace(/\*\*(.*?)\*\*/g, '$1')
-        .replace(/\*(.*?)\*/g, '$1')
-        .replace(/#{1,6}\s*/g, '')
-        .trim();
+  return (text || "")
+    .replace(/^\s*\*\s+/gm, '- ')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s*/g, '')
+    .trim();
 }
