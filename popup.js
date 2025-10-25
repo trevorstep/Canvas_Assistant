@@ -58,10 +58,20 @@ function prioritize(assignments) {
     document.addEventListener("DOMContentLoaded", () => {
         const otherBtn = document.getElementById("other");
         const chatContainer = document.getElementById("chat-container");
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
         
         if (otherBtn && chatContainer) {
           otherBtn.addEventListener("click", () => {
             chatContainer.classList.toggle("hidden");
+          });
+        }
+
+        if (userInput && sendBtn) {
+          userInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              sendBtn.click();
+            }
           });
         }
       });
