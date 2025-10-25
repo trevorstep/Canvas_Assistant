@@ -18,16 +18,11 @@
       <button id="other">Other</button>
 
       <!-- Chat interface (hidden by default) -->
-      <div id="chat-interface" class="collapsed">
-        <h3>AI Chat</h3>
-        <div id="chat-window">
-          <div id="messages"></div>
-          <div style="display: flex; margin-top: 10px;">
-            <input type="text" id="user-input" placeholder="Type your message..." />
-            <button id="send-btn">Send</button>
-          </div>
-        </div>
-      </div>
+      <div id="chat-container" class="hidden">
+        <div id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Type a message..." />
+        <button id="send-btn">Send</button>
+      </div>      
     <script src="popup.js"></script>
   </body>
 </html>
