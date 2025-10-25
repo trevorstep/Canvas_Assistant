@@ -86,7 +86,16 @@ function prioritize(assignments) {
 
 
 
+    // Opens a new popup window for the chat interface
+    const otherBtn = document.getElementById("other");
 
+    otherBtn.addEventListener("click", () => {
+      window.open(
+        chrome.runtime.getURL("chat.html"),
+        "AI Chat",
+        "width=450,height=600,resizable=yes"
+      );
+    });
 
 
 
