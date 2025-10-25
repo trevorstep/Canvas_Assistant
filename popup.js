@@ -11,20 +11,29 @@ async function fetchAssignments() {
     if (!token) return alert('No token saved — go to Options to add one.');
 
     const base = 'https://byui.instructure.com';
-    const res = await fetch(`${base}/api/v1/courses?enrollment_state=active`, {
+    const res = await fetch(`${base}/api/v1/courses`, {
         headers: { Authorization: `Bearer ${token}` }
     });
     const courses = await res.json();
 
     const allAssignments = [];
+
     for (const c of courses) {
         try {
-            const aRes = await fetch(`${base}/api/v1/courses/${c.id}/assignments`, {
+            const aRes = await fetch(`${base}/api/v1/courses/${c.id}/assignments?include[]=submission`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const list = await aRes.json();
+
             for (const a of list) {
-                if (a.due_at) allAssignments.push(a);
+                const submission = a.submission;
+                const isSubmitted = submission && (submission.submitted_at || submission.workflow_state === 'submitted');
+                const isGraded = submission && submission.graded_at;
+                const isExcused = submission && submission.excused;
+
+                if (a.due_at && !isSubmitted && !isGraded && !isExcused) {
+                    allAssignments.push(a);
+                }
             }
         } catch (err) {
             console.error("Error fetching assignments for course", c.name, err);
@@ -33,6 +42,7 @@ async function fetchAssignments() {
 
     return allAssignments;
 }
+
 
 function prioritize(assignments) {
     const now = Date.now();
@@ -163,10 +173,10 @@ async function summarize(prompt) {
 }
 
 function stripMarkdown(text) {
-  return (text || "")
-    .replace(/^\s*\*\s+/gm, '- ')
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    .replace(/#{1,6}\s*/g, '')
-    .trim();
+    return (text || "")
+        .replace(/^\s*\*\s+/gm, '- ')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/#{1,6}\s*/g, '')
+        .trim();
 }

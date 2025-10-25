@@ -1,33 +1,42 @@
 {
-  "manifest_version": 3,
-  "name": "Canvas Assistant",
-  "version": "1.2",
-  "description": "Prioritize Canvas assignments and summarize pages.",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
-  ],
-  "host_permissions": [
-    "https://*.instructure.com/*"
-  ],
-  "options_page": "options.html",
-  "action": {
-    "default_popup": "popup.html",
-    "default_title": "Canvas Helper"
-  },
-  "commands": {
-    "_execute_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+L"
-      },
-      "description": "Open Canvas Helper popup"
-    }
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
-    }
-  ]
+    "manifest_version": 3,
+    "name": "Canvas Assistant",
+    "version": "1.2",
+    "description": "Prioritize Canvas assignments and summarize pages.",
+    "permissions": [
+        "storage",
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://*.instructure.com/*"
+    ],
+    "options_page": "options.html",
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Canvas Helper"
+    },
+    "submission": {
+        "submitted_at": "2025-10-23T20:45:31Z",
+        "workflow_state": "graded",
+        "score": 9.5
+    },
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+L"
+            },
+            "description": "Open Canvas Helper popup"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
 }
