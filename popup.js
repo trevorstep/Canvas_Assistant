@@ -37,7 +37,7 @@ async function fetchAssignments() {
 
 function prioritize(assignments) {
     const now = Date.now();
-    const twoWeeksMs = 14 * 24 * 60 * 60 * 1000;
+    const twoWeeksMs = 14 * 24 * 60 * 60 * 1000; 
 
     const upcoming = assignments
         .filter(a => {
@@ -54,14 +54,16 @@ function prioritize(assignments) {
 
 
 
-    // Toggles the in-popup chat interface
+    // Opens a new popup window for the chat interface
     const otherBtn = document.getElementById("other");
-    const chatInterface = document.getElementById("chat-interface");
 
     otherBtn.addEventListener("click", () => {
-    chatInterface.classList.toggle("collapsed");
+      window.open(
+        chrome.runtime.getURL("chat.html"),
+        "AI Chat",
+        "width=450,height=300,resizable=no"
+      );
     });
-
 
 
 document.getElementById('fetch').addEventListener('click', async () => {
@@ -75,18 +77,6 @@ document.getElementById('fetch').addEventListener('click', async () => {
 
         for (const a of prioritized) {
             const li = document.createElement('li');
-            const markBtn = document.createElement('button');
-            markBtn.textContent = "Mark Complete";
-            markBtn.style.marginLeft = "10px";
-
-            markBtn.addEventListener('click', () => {
-                li.style.textDecoration = "line-through";
-                li.style.opacity = "0.6";
-                markBtn.disabled = true;
-                markBtn.textContent = "Completed";
-            });
-
-
             li.textContent = `${a.name} — due ${new Date(a.due_at).toLocaleString()} `;
 
             const summarizeBtn = document.createElement('button');
@@ -110,8 +100,8 @@ document.getElementById('fetch').addEventListener('click', async () => {
                         : "No description provided.";
 
                     const result = await async function summarize(prompt) {
-                        return await shortSummarize(`Summarize the most important parts of this text:\n\n${prompt}`);
-                    }(`Summarize this Canvas assignment:\n\n${description}`);
+    return await shortSummarize(`Summarize the most important parts of this text:\n\n${prompt}`);
+}(`Summarize this Canvas assignment:\n\n${description}`);
                     const clean = stripMarkdown(result);
 
                     const summaryEl = document.createElement('div');
@@ -129,10 +119,8 @@ document.getElementById('fetch').addEventListener('click', async () => {
                 }
             });
 
-            li.appendChild(markBtn);
             li.appendChild(summarizeBtn);
             list.appendChild(li);
-
         }
     } catch (err) {
         list.innerHTML = 'Error fetching assignments.';
@@ -154,31 +142,17 @@ async function extractPageText() {
     return result;
 }
 
-// Summarize button
+
 document.getElementById('summarize').addEventListener('click', async () => {
     try {
         const text = await extractPageText();
         document.getElementById('summary').innerText = "Thinking…";
 
-        const answer = await summarize(text);
+        const answer = await summarize(text);  // await the promise
         document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
     } catch (e) {
         console.error(e);
         document.getElementById('summary').innerText = "Error: " + e.message;
-        alert("Error: " + e.message);
-    }
-});
-
-// Send button
-document.getElementById('send-btn').addEventListener('click', async () => {
-    try {
-        const text = document.getElementById("user-input").value;
-
-        const answer = await otherGeminiQuestion(text);
-        alert(answer);
-        // document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
-    } catch (e) {
-        console.error(e);
         alert("Error: " + e.message);
     }
 });
@@ -203,54 +177,10 @@ async function shortSummarize(prompt) {
 }
 
 function stripMarkdown(text) {
-    return (text || "")
-        .replace(/^\s*\*\s+/gm, '- ')
-        .replace(/\*\*(.*?)\*\*/g, '$1')
-        .replace(/\*(.*?)\*/g, '$1')
-        .replace(/#{1,6}\s*/g, '')
-        .trim();
+  return (text || "")
+    .replace(/^\s*\*\s+/gm, '- ')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s*/g, '')
+    .trim();
 }
-
-async function otherGeminiQuestion(prompt) {
-    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here is their current question: \n\n${prompt}`);
-}
-
-document.getElementById("other").addEventListener("click", () => {
-    const chatContainer = document.getElementById("chat-container");
-  
-    // Toggle visibility (show/hide)
-    chatContainer.classList.toggle("active");
-  
-    // Optional: focus the input when opened
-    if (chatContainer.classList.contains("active")) {
-      document.getElementById("chat-input").focus();
-    }
-  });
-  
-  // Chat send button logic
-  document.getElementById("chat-send").addEventListener("click", () => {
-    const input = document.getElementById("chat-input");
-    const messages = document.getElementById("chat-messages");
-  
-    const userMessage = input.value.trim();
-    if (userMessage === "") return;
-  
-    // Add user's message
-    const userBubble = document.createElement("div");
-    userBubble.className = "user-bubble";
-    userBubble.textContent = userMessage;
-    messages.appendChild(userBubble);
-  
-    input.value = "";
-  
-    // Simulate AI response
-    const aiBubble = document.createElement("div");
-    aiBubble.className = "ai-bubble";
-    aiBubble.textContent = "Thinking...";
-    messages.appendChild(aiBubble);
-  
-    setTimeout(() => {
-      aiBubble.textContent = "Hello! This is your AI assistant 😊";
-    }, 800);
-  });
-  
