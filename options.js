@@ -9,11 +9,6 @@ document.getElementById('saveToken').addEventListener('click', async () => {
 });
 
 
-// === Load saved token on startup ===
-async function getToken() {
-  const { canvasToken } = await chrome.storage.sync.get('canvasToken');
-  return canvasToken;
-}
 
 
 // === Load Courses ===
