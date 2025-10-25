@@ -20,22 +20,26 @@ body {
   box-shadow: 0 0 45px rgba(0, 0, 0, 0.2);
 }
 
-
 /* === Glowing rainbow aura === */
 body::before {
   content: "";
   position: absolute;
   inset: -50px;
   border-radius: 50px;
-  z-index: 0; /* 🔥 puts it behind everything */
+
 }
 
-/* Ensure all interactive stuff is above */
-.container, input, button, h1, h2, p, #courseList, #status {
-  position: relative;
-  z-index: 1;
+@keyframes rainbowBorder {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
-
 
 /* === Content container === */
 .container {
@@ -153,65 +157,63 @@ button:hover {
   min-height: 20px;
 }
 
-/* === Notification Section === */
-.notification-section {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+/* === Notifications Section === */
+.notifications-section {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 15px;
   padding: 18px 22px;
-  margin-top: 28px;
-  color: #1f2b6c;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   transition: all 0.25s ease-in-out;
 }
 
-.notification-section:hover {
+.notifications-section:hover {
   transform: scale(1.01);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.notification-section label {
+.checkbox-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
-  font-weight: 500;
-  user-select: none;
+  font-size: 15px;
+  color: #1f2b6c;
+  margin-bottom: 10px;
 }
 
-#textNotifyCheckbox {
+.checkbox-container input[type="checkbox"] {
   width: 18px;
   height: 18px;
   accent-color: #7873f5;
   cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-#textNotifyCheckbox:hover {
   transform: scale(1.1);
 }
 
 #phoneInputContainer {
-  margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  gap: 6px;
+  transition: all 0.3s ease;
 }
 
-.hidden {
+#phoneInputContainer.hidden {
+  max-height: 0;
   opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
+  margin-top: 0;
+  padding: 0;
+}
+
+.phone-label {
+  font-size: 14px;
+  color: #1f2b6c;
+  opacity: 0.85;
 }
 
 #phoneNumber, #carrier {
   width: 100%;
-  padding: 10px 12px;
+  font-size: 15px;
+  padding: 10px;
   border-radius: 10px;
-  border: 1px solid rgba(120, 120, 255, 0.4);
+  border: 1px solid rgba(120, 120, 255, 0.3);
   background: rgba(255, 255, 255, 0.6);
   font-size: 15px;
   color: #1f2b6c;
@@ -225,26 +227,19 @@ button:hover {
   background: rgba(255, 255, 255, 0.8);
 }
 
-#savePhoneBtn {
+#savePhone {
+  width: 100%;
   background: linear-gradient(90deg, #7873f5, #fb7185);
   color: white;
+  font-weight: 500;
+  padding: 10px;
   border: none;
-  padding: 10px 14px;
   border-radius: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(120, 115, 245, 0.25);
-  transition: all 0.25s ease-in-out;
+  box-shadow: 0 4px 12px rgba(120, 115, 245, 0.3);
+  transition: all 0.25s ease;
 }
 
-#savePhoneBtn:hover {
+#savePhone:hover {
   transform: scale(1.04);
-  box-shadow: 0 6px 16px rgba(120, 115, 245, 0.35);
-}
-
-.status-message {
-  margin-top: 5px;
-  font-size: 13px;
-  color: #4ade80;
-  text-align: center;
+  box-shadow: 0 6px 16px rgba(120, 115, 245, 0.4);
 }
