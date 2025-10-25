@@ -10,6 +10,11 @@ document.getElementById('saveToken').addEventListener('click', async () => {
 
 
 
+async function getToken() {
+  const { canvasToken } = await chrome.storage.sync.get('canvasToken');
+  return canvasToken;
+}
+
 
 // === Load Courses ===
 async function loadCourses() {
