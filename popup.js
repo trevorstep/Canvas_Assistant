@@ -6,52 +6,33 @@ async function getToken() {
     return canvasToken;
 }
 
-async function getToken() {
-  const { canvasToken } = await chrome.storage.sync.get('canvasToken');
-  return canvasToken;
-}
-
 async function fetchAssignments() {
-  const token = await getToken();
-  if (!token) {
-    alert('No token saved — go to Options to add one.');
-    return [];
-  }
+    const token = await getToken();
+    if (!token) return alert('No token saved — go to Options to add one.');
 
-  const base = 'https://byui.instructure.com';
+    const base = 'https://byui.instructure.com';
+    const res = await fetch(`${base}/api/v1/courses?enrollment_state=active`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const courses = await res.json();
 
-  const res = await fetch(`${base}/api/v1/courses`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  const courses = await res.json();
-
-  const allAssignments = [];
-
-  for (const c of courses) {
-    try {
-      const aRes = await fetch(
-        `${base}/api/v1/courses/${c.id}/assignments?include[]=submission`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
+    const allAssignments = [];
+    for (const c of courses) {
+        try {
+            const aRes = await fetch(`${base}/api/v1/courses/${c.id}/assignments`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const list = await aRes.json();
+            for (const a of list) {
+                if (a.due_at) allAssignments.push(a);
+            }
+        } catch (err) {
+            console.error("Error fetching assignments for course", c.name, err);
         }
-      );
-      const list = await aRes.json();
-
-      for (const a of list) {
-        const submitted = a.submission && (a.submission.submitted_at || a.submission.workflow_state === "graded");
-        if (a.due_at && !submitted) {
-          allAssignments.push(a);
-        }
-      }
-
-    } catch (err) {
-      console.error("Error fetching assignments for course", c.name, err);
     }
-  }
 
-  return allAssignments;
+    return allAssignments;
 }
-
 
 function prioritize(assignments) {
     const now = Date.now();
