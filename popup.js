@@ -187,8 +187,7 @@ async function summarize(prompt) {
 }
 
 async function shortSummarize(prompt) {
-    response = await askGemini(`Summarize the most important parts of this text in 2 sentances:\n\n${prompt}`);
-    return typewriter(response);
+    return await askGemini(typewriter(`Summarize the most important parts of this text in 2 sentances:\n\n${prompt}`));
 }
 
 function stripMarkdown(text) {
@@ -225,7 +224,7 @@ async function typewriter(text) {
 
   for (let i = 0; i < text.length; i++) {
     output.textContent += text[i];
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 1000 / 30));
   }
 }
 
