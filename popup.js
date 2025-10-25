@@ -57,6 +57,21 @@ document.getElementById('fetch').addEventListener('click', async () => {
     }
 });
 
+
+
+
+
+
+
+
+// dont work on anything above this line
+
+
+
+
+
+
+
 document.getElementById('summarize').addEventListener('click', async () => {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     const tabId = tabs[0].id;
