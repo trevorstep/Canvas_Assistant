@@ -189,12 +189,10 @@ button:hover {
 }
 
 #phoneInputContainer {
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   transition: all 0.3s ease;
-  overflow: hidden;
 }
 
 #phoneInputContainer.hidden {
