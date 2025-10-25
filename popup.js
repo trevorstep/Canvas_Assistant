@@ -215,19 +215,6 @@ document.getElementById("other").addEventListener("click", () => {
     }
   });
   
-async function typewriter(text) {
-  const output = document.getElementById("output");
-  output.textContent = ""; 
-
-  const words = text.split(" ");
-
-  for (let i = 0; i < words.length; i++) {
-    output.textContent += (i === 0 ? "" : " ") + words[i];
-    await new Promise(resolve => setTimeout(resolve, 10)); 
-  }
-}
-
-
 
   document.getElementById('send-btn').addEventListener('click', async () => {
     try {
