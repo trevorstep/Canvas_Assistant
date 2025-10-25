@@ -1,117 +1,116 @@
 /* === Outer popup (the full window) === */
 body {
-    font-family: "Segoe UI", Roboto, sans-serif;
-    width: 380px; /* overall popup width */
-    height: 460px;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.15); /* soft transparency */
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border-radius: 28px;
-    position: relative;
-    overflow: visible;
-    box-shadow: 0 0 45px rgba(0, 0, 0, 0.2);
-    color: #1f2b6c;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  width: 380px; /* overall popup width */
+  height: 460px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15); /* soft transparency */
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-radius: 28px;
+  position: absolute;
+  overflow: visible;
+  box-shadow: 0 0 45px rgba(0, 0, 0, 0.2);
+  color: #1f2b6c;
+}
+
+/* === Glowing rainbow aura around popup === */
+body::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  border-radius: 40px;
+  background: linear-gradient(
+    90deg,
+    #ff6ec4,
+    #7873f5,
+    #4ade80,
+    #facc15,
+    #fb7185,
+    #ff6ec4
+  );
+  background-size: 400%;
+  filter: blur(40px);
+  opacity: 0.6;
+  z-index: -2;
+  animation: rainbowBorder 12s linear infinite;
+}
+
+/* === Centered content card === */
+.container {
+  width: 80%;
+  min-height: 370px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px) saturate(160%);
+  -webkit-backdrop-filter: blur(15px) saturate(160%);
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes rainbowBorder {
+  0% {
+    background-position: 0% 50%;
   }
-  
-  /* === Glowing rainbow aura around popup === */
-  body::before {
-    content: "";
-    position: absolute;
-    inset: -40px;
-    border-radius: 40px;
-    background: linear-gradient(
-      90deg,
-      #ff6ec4,
-      #7873f5,
-      #4ade80,
-      #facc15,
-      #fb7185,
-      #ff6ec4
-    );
-    background-size: 400%;
-    filter: blur(40px);
-    opacity: 0.6;
-    z-index: -2;
-    animation: rainbowBorder 12s linear infinite;
+  50% {
+    background-position: 100% 50%;
   }
-  
-  /* === Centered content card === */
-  .container {
-    width: 80%;
-    min-height: 370px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(15px) saturate(160%);
-    -webkit-backdrop-filter: blur(15px) saturate(160%);
-    border-radius: 20px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-    padding: 20px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
+  100% {
+    background-position: 0% 50%;
   }
-  
-  @keyframes rainbowBorder {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  
-  /* === Typography === */
-  h2 {
-    margin-top: 0;
-    font-size: 22px;
-    margin-bottom: 18px;
-    background: linear-gradient(90deg, #7873f5, #fb7185);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  /* === Buttons === */
-  button {
-    margin-top: 10px;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.7);
-    color: #1f2b6c;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    padding: 12px 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transition: all 0.25s ease-in-out;
-    backdrop-filter: blur(8px);
-  }
-  
-  button:hover {
-    transform: scale(1.04);
-    background: rgba(255, 255, 255, 0.9);
-    cursor: pointer;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* === Assignments list === */
-  #assignments {
-    list-style: none;
-    padding: 0;
-    width: 100%;
-    margin: 15px 0;
-  }
-  
-  #assignments li {
-    margin: 6px;
-    font-size: 14px;
-    background: rgba(240, 240, 255, 0.6);
-    border-radius: 6px;
-    padding: 6px 10px;
-  }
-  
+}
+
+/* === Typography === */
+h2 {
+  margin-top: 0;
+  font-size: 22px;
+  margin-bottom: 18px;
+  background: linear-gradient(90deg, #7873f5, #fb7185);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* === Buttons === */
+button {
+  margin-top: 10px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  color: #1f2b6c;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  padding: 12px 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease-in-out;
+  backdrop-filter: blur(8px);
+}
+
+button:hover {
+  transform: scale(1.04);
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+/* === Assignments list === */
+#assignments {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  margin: 15px 0;
+}
+
+#assignments li {
+  margin: 6px;
+  font-size: 14px;
+  background: rgba(240, 240, 255, 0.6);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
