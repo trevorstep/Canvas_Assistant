@@ -120,17 +120,17 @@ async function fetchAssignments() {
 
 
 
-    async function extractPageText() {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        const [{ result }] = await chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: () => {
-                const el = document.querySelector('#content.ic-Layout-contentMain[role="main"]');
-                return el ? el.innerText.slice(0, 20000) : '';
-            }
-        });
-        return result;
-    }
+async function extractPageText() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const [{ result }] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+            const el = document.querySelector('#content.ic-Layout-contentMain[role="main"]');
+            return el ? el.innerText.slice(0, 20000) : '';
+        }
+    });
+    return result;
+}
 
 
 document.getElementById('summarize').addEventListener('click', async () => {
@@ -138,9 +138,8 @@ document.getElementById('summarize').addEventListener('click', async () => {
     const text = await extractPageText();
     document.getElementById('summary').innerText = "Thinking…";
 
-    const answer = await askGemini(text);  // await the promise
-    document.getElementById('summary').innerText = answer || "(No answer)";
-    alert(answer); 
+    const answer = await summarize(text);  // await the promise
+    document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
   } catch (e) {
     console.error(e);
     document.getElementById('summary').innerText = "Error: " + e.message;
@@ -157,4 +156,16 @@ async function askGemini(prompt) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data.result || "";
+}
+
+async function summarize(prompt) {
+  return await askGemini(`Summarize the most important parts of this text super short:\n\n${prompt}`);
+}
+
+function stripMarkdown(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s*/g, '')
+    .trim();
 }
