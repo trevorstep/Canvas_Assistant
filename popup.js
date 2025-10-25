@@ -192,6 +192,7 @@ function stripMarkdown(text) {
 async function otherGeminiQuestion(prompt) {
     return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here are their assignments: ${fetchedAssignments}. The date and time is ${now.toString()}Here is their current question: \n\n${prompt}`);
 }
+
 document.getElementById("other").addEventListener("click", () => {
     const chatContainer = document.getElementById("chat-container");
   
@@ -204,30 +205,19 @@ document.getElementById("other").addEventListener("click", () => {
     }
   });
   
-  // Chat send button logic
-  document.getElementById("chat-send").addEventListener("click", () => {
-    const input = document.getElementById("chat-input");
-    const messages = document.getElementById("chat-messages");
+
   
-    const userMessage = input.value.trim();
-    if (userMessage === "") return;
-  
-    // Add user's message
-    const userBubble = document.createElement("div");
-    userBubble.className = "user-bubble";
-    userBubble.textContent = userMessage;
-    messages.appendChild(userBubble);
-  
-    input.value = "";
-  
-    // Simulate AI response
-    const aiBubble = document.createElement("div");
-    aiBubble.className = "ai-bubble";
-    aiBubble.textContent = "Thinking...";
-    messages.appendChild(aiBubble);
-  
-    setTimeout(() => {
-      aiBubble.textContent = "Hello! This is your AI assistant 😊";
-    }, 800);
-  });
-  
+
+  document.getElementById('send-btn').addEventListener('click', async () => {
+    try {
+        const text = document.getElementById("user-input").value;
+
+        const answer = await otherGeminiQuestion(text);
+        alert(answer);
+        // document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
+    } catch (e) {
+        console.error(e);
+        document.getElementById('summary').innerText = "Error: " + e.message;
+        alert("Error: " + e.message);
+    }
+});
