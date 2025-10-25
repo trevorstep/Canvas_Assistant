@@ -58,20 +58,10 @@ function prioritize(assignments) {
     document.addEventListener("DOMContentLoaded", () => {
         const otherBtn = document.getElementById("other");
         const chatContainer = document.getElementById("chat-container");
-        const userInput = document.getElementById("user-input");
-        const sendBtn = document.getElementById("send-btn");
         
         if (otherBtn && chatContainer) {
           otherBtn.addEventListener("click", () => {
             chatContainer.classList.toggle("hidden");
-          });
-        }
-
-        if (userInput && sendBtn) {
-          userInput.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") {
-              sendBtn.click();
-            }
           });
         }
       });
@@ -187,7 +177,7 @@ async function summarize(prompt) {
 }
 
 async function shortSummarize(prompt) {
-    return await askGemini(typewriter(`Summarize the most important parts of this text in 2 sentances:\n\n${prompt}`));
+    return await askGemini(`Summarize the most important parts of this text in 2 sentances:\n\n${prompt}`);
 }
 
 function stripMarkdown(text) {
@@ -215,6 +205,19 @@ document.getElementById("other").addEventListener("click", () => {
     }
   });
   
+async function typewriter(text) {
+  const output = document.createElement("div");
+  output.style.fontFamily = "monospace";
+  output.style.fontSize = "20px";
+  output.style.whiteSpace = "pre-wrap";
+  document.body.appendChild(output);
+
+  for (let i = 0; i < text.length; i++) {
+    output.textContent += text[i];
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
 
   document.getElementById('send-btn').addEventListener('click', async () => {
     try {
