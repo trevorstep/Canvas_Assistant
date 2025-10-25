@@ -37,33 +37,18 @@ async function fetchAssignments() {
 
 function prioritize(assignments) {
     const now = Date.now();
-    const weekMs = 7 * 24 * 60 * 60 * 1000; 
+    const twoWeeksMs = 14 * 24 * 60 * 60 * 1000; 
 
     const upcoming = assignments
-        .map(a => ({
-            ...a,
-            due_ts: new Date(a.due_at).getTime(),
-            points: a.points_possible || 0
-        }))
-        .filter(a => a.due_ts > now && (a.due_ts - now) <= weekMs);
+        .filter(a => {
+            if (!a.due_at) return false;
+            const dueTs = new Date(a.due_at).getTime();
+            const notSubmitted = !a.has_submitted_submissions && !a.submission?.submitted_at;
+            return notSubmitted && dueTs >= now && (dueTs - now) <= twoWeeksMs;
+        })
+        .sort((a, b) => new Date(a.due_at) - new Date(b.due_at)); 
 
-    if (upcoming.length === 0) return [];
-
-    const maxPoints = Math.max(...upcoming.map(a => a.points || 0)) || 1;
-
-    const scored = upcoming.map(a => {
-        const timeUntilDue = a.due_ts - now;
-        const urgencyScore = Math.max(0, 1 - timeUntilDue / weekMs); 
-        const weightScore = a.points / maxPoints; 
-
-        const priorityScore = (urgencyScore * 0.6) + (weightScore * 0.4);
-
-        return { ...a, urgencyScore, weightScore, priorityScore };
-    });
-
-    scored.sort((a, b) => b.priorityScore - a.priorityScore);
-
-    return scored.slice(0, 5);
+    return upcoming;
 }
 
 
