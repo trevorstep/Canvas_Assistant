@@ -16,9 +16,6 @@
         "default_popup": "popup.html",
         "default_title": "Canvas Assistant"
     },
-    "background": {
-        "service_worker": "popup.js"
-    },
     "commands": {
         "_execute_action": {
             "suggested_key": {
