@@ -53,16 +53,14 @@ function prioritize(assignments) {
 
 
 
-    // Opens a new popup window for the chat interface
+    // Toggles the in-popup chat interface
     const otherBtn = document.getElementById("other");
+    const chatInterface = document.getElementById("chat-interface");
 
     otherBtn.addEventListener("click", () => {
-      window.open(
-        chrome.runtime.getURL("chat.html"),
-        "AI Chat",
-        "width=450,height=300,resizable=no"
-      );
+    chatInterface.classList.toggle("collapsed");
     });
+
 
 
 document.getElementById('fetch').addEventListener('click', async () => {
@@ -198,10 +196,43 @@ function stripMarkdown(text) {
     .trim();
 }
 
-async function otherGeminiQuestion(prompt) {
-    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here is their current question: \n\n${prompt}`);
-}
 
-
-
-
+document.getElementById("other").addEventListener("click", () => {
+    const chatContainer = document.getElementById("chat-container");
+  
+    // Toggle visibility (show/hide)
+    chatContainer.classList.toggle("active");
+  
+    // Optional: focus the input when opened
+    if (chatContainer.classList.contains("active")) {
+      document.getElementById("chat-input").focus();
+    }
+  });
+  
+  // Chat send button logic
+  document.getElementById("chat-send").addEventListener("click", () => {
+    const input = document.getElementById("chat-input");
+    const messages = document.getElementById("chat-messages");
+  
+    const userMessage = input.value.trim();
+    if (userMessage === "") return;
+  
+    // Add user's message
+    const userBubble = document.createElement("div");
+    userBubble.className = "user-bubble";
+    userBubble.textContent = userMessage;
+    messages.appendChild(userBubble);
+  
+    input.value = "";
+  
+    // Simulate AI response
+    const aiBubble = document.createElement("div");
+    aiBubble.className = "ai-bubble";
+    aiBubble.textContent = "Thinking...";
+    messages.appendChild(aiBubble);
+  
+    setTimeout(() => {
+      aiBubble.textContent = "Hello! This is your AI assistant 😊";
+    }, 800);
+  });
+  
