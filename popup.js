@@ -17,72 +17,69 @@ async function fetchAssignments() {
     const courses = await res.json();
 
     const allAssignments = [];
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const weekFromNow = now.getTime() + 7 * 24 * 60 * 60 * 1000;
+
     for (const c of courses) {
         try {
-            const aRes = await fetch(`${base}/api/v1/courses/${c.id}/assignments`, {
+            const aRes = await fetch(`${base}/api/v1/courses/${c.id}/assignments?include[]=submission`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const list = await aRes.json();
+
             for (const a of list) {
-                if (a.due_at) allAssignments.push(a);
+                if (!a.due_at) continue;
+
+                const dueDate = new Date(a.due_at);
+                const dueTime = dueDate.getTime();
+                const sub = a.submission;
+                const isSubmitted = sub && (sub.submitted_at || sub.workflow_state === "submitted");
+                const isGraded = sub && sub.graded_at;
+                const isExcused = sub && sub.excused;
+
+                if (!isSubmitted && !isGraded && !isExcused && dueTime <= weekFromNow) {
+                    allAssignments.push({
+                        ...a,
+                        due_ts: dueTime,
+                        due_str: dueDate.toISOString().slice(0, 10),
+                        points: a.points_possible || 0
+                    });
+                }
             }
         } catch (err) {
             console.error("Error fetching assignments for course", c.name, err);
         }
     }
 
-    return allAssignments;
-}
-
-function prioritize(assignments) {
-    const now = Date.now();
-    return assignments
-        .map(a => ({ ...a, due_ts: new Date(a.due_at).getTime() }))
-        .filter(a => a.due_ts > now)
-        .sort((a, b) => a.due_ts - b.due_ts)
-        .slice(0, 5);
+    return prioritize(allAssignments, todayStr);
 }
 
 
-
-
-
-function prioritize(assignments) {
+function prioritize(assignments, todayStr) {
     const now = Date.now();
-    const weekMs = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+    const maxPoints = Math.max(...assignments.map(a => a.points || 0)) || 1;
 
-    // Step 1: Filter to only assignments due within a week
-    const upcoming = assignments
-        .map(a => ({
-            ...a,
-            due_ts: new Date(a.due_at).getTime(),
-            points: a.points_possible || 0
-        }))
-        .filter(a => a.due_ts > now && (a.due_ts - now) <= weekMs);
-
-    if (upcoming.length === 0) return [];
-
-    // Step 2: Normalize weight so point values scale from 0 to 1
-    const maxPoints = Math.max(...upcoming.map(a => a.points || 0)) || 1;
-
-    // Step 3: Compute priority score
-    const scored = upcoming.map(a => {
+    const scored = assignments.map(a => {
         const timeUntilDue = a.due_ts - now;
-        const urgencyScore = Math.max(0, 1 - timeUntilDue / weekMs); // closer = higher
-        const weightScore = a.points / maxPoints; // higher points = higher importance
-
-        // Adjust balance of urgency vs weight here
+        const urgencyScore = Math.max(0, 1 - timeUntilDue / weekMs);
+        const weightScore = a.points / maxPoints;
         const priorityScore = (urgencyScore * 0.6) + (weightScore * 0.4);
-
-        return { ...a, urgencyScore, weightScore, priorityScore };
+        const isToday = a.due_str === todayStr;
+        return { ...a, priorityScore, isToday };
     });
 
-    // Step 4: Sort by score descending (most important first)
-    scored.sort((a, b) => b.priorityScore - a.priorityScore);
+    // Sort: due today first, then by score descending
+    scored.sort((a, b) => {
+        if (a.isToday && !b.isToday) return -1;
+        if (!a.isToday && b.isToday) return 1;
+        return b.priorityScore - a.priorityScore;
+    });
 
-    // Step 5: Limit to top 5 results (optional)
-    return scored.slice(0, 5);
+    return scored;
 }
+
 
 
 
