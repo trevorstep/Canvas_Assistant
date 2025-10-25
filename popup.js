@@ -217,9 +217,6 @@ document.getElementById("other").addEventListener("click", () => {
   
 async function typewriter(text) {
   const output = document.createElement("div");
-  output.style.fontFamily = "monospace";
-  output.style.fontSize = "20px";
-  output.style.whiteSpace = "pre-wrap";
   document.body.appendChild(output);
 
   for (let i = 0; i < text.length; i++) {
