@@ -53,17 +53,19 @@ function prioritize(assignments) {
 
 
 
+    // Toggles the in-popup chat interface. This function was made with the help of ChatGPT.
+    document.addEventListener("DOMContentLoaded", () => {
+        const otherBtn = document.getElementById("other");
+        const chatContainer = document.getElementById("chat-container");
+        
+        if (otherBtn && chatContainer) {
+          otherBtn.addEventListener("click", () => {
+            chatContainer.classList.toggle("hidden");
+          });
+        }
+      });
+      
 
-    // Opens a new popup window for the chat interface
-    const otherBtn = document.getElementById("other");
-
-    otherBtn.addEventListener("click", () => {
-      window.open(
-        chrome.runtime.getURL("chat.html"),
-        "AI Chat",
-        "width=450,height=300,resizable=no"
-      );
-    });
 
 
 document.getElementById('fetch').addEventListener('click', async () => {
