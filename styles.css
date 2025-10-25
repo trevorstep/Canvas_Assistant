@@ -43,7 +43,7 @@ body::before {
 /* === Centered content card === */
 .container {
   width: 80%;
-  min-height: 370px;
+  max-height: 80%;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(15px) saturate(160%);
   -webkit-backdrop-filter: blur(15px) saturate(160%);
@@ -53,6 +53,19 @@ body::before {
   text-align: center;
   position: relative;
   z-index: 1;
+
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 255, 0.5) transparent;
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: rgba(120, 120, 255, 0.5);
+  border-radius: 4px;
 }
 
 @keyframes rainbowBorder {
