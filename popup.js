@@ -65,8 +65,13 @@ function prioritize(assignments) {
           });
         }
       });
-      
 
+    document.getElementById('user-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('send-btn').click(); // Trigger the send button
+    }
+    });
+    
       document.addEventListener('DOMContentLoaded', () => {
         const checkbox = document.getElementById('textNotifyCheckbox');
         const phoneContainer = document.getElementById('phoneInputContainer');
