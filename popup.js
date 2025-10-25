@@ -96,7 +96,16 @@ function prioritize(assignments) {
 
 
 
+    // Opens a new popup window for the chat interface
+    const otherBtn = document.getElementById("other");
 
+    otherBtn.addEventListener("click", () => {
+      window.open(
+        chrome.runtime.getURL("chat.html"),
+        "AI Chat",
+        "width=450,height=600,resizable=yes"
+      );
+    });
 
 
 
@@ -180,3 +189,10 @@ function stripMarkdown(text) {
         .replace(/#{1,6}\s*/g, '')
         .trim();
 }
+
+async function otherGeminiQuestion(prompt) {
+    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here is their current question: \n\n${prompt}`);
+}
+
+
+//. Here is information about their assignments: ${}.
