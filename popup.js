@@ -68,7 +68,7 @@ function prioritize(assignments) {
 
 
 
-
+// Written with help from ChatGPT
 document.getElementById('fetch').addEventListener('click', async () => {
     const list = document.getElementById('assignments');
     list.innerHTML = 'Loading...';
@@ -78,50 +78,57 @@ document.getElementById('fetch').addEventListener('click', async () => {
         const prioritized = prioritize(assignments);
         list.innerHTML = '';
 
-        prioritized.forEach(a => {
+        for (const a of prioritized) {
             const li = document.createElement('li');
-            li.className = 'assignment-item';
-            li.innerHTML = `
-                <strong>${a.name}</strong> — due ${new Date(a.due_at).toLocaleString()}
-                <button class="summarize-btn">Summarize Assignment</button>
-                <div class="summary"></div>
-            `;
+            li.textContent = `${a.name} — due ${new Date(a.due_at).toLocaleString()} `;
 
-            const summarizeBtn = li.querySelector('.summarize-btn');
-            const summaryDiv = li.querySelector('.summary');
+            const summarizeBtn = document.createElement('button');
+            summarizeBtn.textContent = "Summarize Assignment";
+            summarizeBtn.style.marginLeft = "10px";
 
             summarizeBtn.addEventListener('click', async () => {
+                summarizeBtn.textContent = "Summarizing...";
                 summarizeBtn.disabled = true;
-                summarizeBtn.textContent = "Summarizing…";
 
                 try {
                     const token = await getToken();
                     const base = 'https://byui.instructure.com';
-                    const detailRes = await fetch(`${base}/api/v1/courses/${a.course_id}/assignments/${a.id}`, {
+                    const res = await fetch(`${base}/api/v1/courses/${a.course_id}/assignments/${a.id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
-                    const details = await detailRes.json();
+                    const details = await res.json();
 
-                    const desc = details.description?.replace(/<[^>]+>/g, '') || "(No description)";
-                    const answer = await summarize(desc);
-                    summaryDiv.textContent = stripMarkdown(answer);
+                    const description = details.description
+                        ? details.description.replace(/<[^>]*>/g, '') // strip HTML tags
+                        : "No description provided.";
 
-                } catch (e) {
-                    summaryDiv.textContent = "Error summarizing assignment.";
-                    console.error(e);
+                    const result = await askGemini(`Summarize this Canvas assignment:\n\n${description}`);
+                    const clean = stripMarkdown(result);
+
+                    const summaryEl = document.createElement('div');
+                    summaryEl.textContent = clean;
+                    summaryEl.style.marginTop = "5px";
+                    summaryEl.style.fontStyle = "italic";
+
+                    li.appendChild(summaryEl);
+                } catch (err) {
+                    console.error(err);
+                    alert("Error summarizing assignment.");
                 } finally {
-                    summarizeBtn.disabled = false;
                     summarizeBtn.textContent = "Summarize Assignment";
+                    summarizeBtn.disabled = false;
                 }
             });
 
+            li.appendChild(summarizeBtn);
             list.appendChild(li);
-        });
+        }
     } catch (err) {
         list.innerHTML = 'Error fetching assignments.';
         console.error(err);
     }
 });
+
 
 
 
