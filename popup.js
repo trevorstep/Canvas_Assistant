@@ -36,20 +36,29 @@ async function fetchAssignments() {
 
 
 function prioritize(assignments) {
-    const now = Date.now();
-    const twoWeeksMs = 14 * 24 * 60 * 60 * 1000; 
+    const now = new Date();
+
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+    const endOfWeek = new Date(now);
+    endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
+    endOfWeek.setHours(23, 59, 59, 999);
+    const endOfWeekTs = endOfWeek.getTime();
 
     const upcoming = assignments
         .filter(a => {
             if (!a.due_at) return false;
             const dueTs = new Date(a.due_at).getTime();
             const notSubmitted = !a.has_submitted_submissions && !a.submission?.submitted_at;
-            return notSubmitted && dueTs >= (now - 12 * 60 * 60 * 1000) && (dueTs - now) <= twoWeeksMs;
+
+            // ✅ Show only assignments due from now through the end of this week
+            return notSubmitted && dueTs >= startOfDay && dueTs <= endOfWeekTs;
         })
-        .sort((a, b) => new Date(a.due_at) - new Date(b.due_at));
+        .sort((a, b) => new Date(a.due_at) - new Date(b.due_at)); // Soonest → latest
 
     return upcoming;
 }
+
 
 
 
