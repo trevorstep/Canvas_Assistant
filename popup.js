@@ -1,3 +1,6 @@
+const AI_ENDPOINT = "https://canvas-ai-endpoint-502269216279.us-central1.run.app";
+
+
 async function getToken() {
     const { canvasToken } = await chrome.storage.sync.get('canvasToken');
     return canvasToken;
@@ -130,8 +133,28 @@ async function fetchAssignments() {
     }
 
 
-    document.getElementById('summarize').addEventListener('click', async () => {
-        const text = await extractPageText();
-        document.getElementById('summary').innerText = text;
-    });
+document.getElementById('summarize').addEventListener('click', async () => {
+  try {
+    const text = await extractPageText();
+    document.getElementById('summary').innerText = "Thinking…";
 
+    const answer = await askGemini(text);  // await the promise
+    document.getElementById('summary').innerText = answer || "(No answer)";
+    alert(answer); 
+  } catch (e) {
+    console.error(e);
+    document.getElementById('summary').innerText = "Error: " + e.message;
+    alert("Error: " + e.message);
+  }
+});
+
+async function askGemini(prompt) {
+  const res = await fetch(AI_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data.result || "";
+}
