@@ -6,41 +6,50 @@ async function getToken() {
     return canvasToken;
 }
 
+async function getToken() {
+  const { canvasToken } = await chrome.storage.sync.get('canvasToken');
+  return canvasToken;
+}
+
 async function fetchAssignments() {
-    const token = await getToken();
-    if (!token) return alert('No token saved — go to Options to add one.');
+  const token = await getToken();
+  if (!token) {
+    alert('No token saved — go to Options to add one.');
+    return [];
+  }
 
-    const base = 'https://byui.instructure.com';
-    const res = await fetch(`${base}/api/v1/courses`, {
-        headers: { Authorization: `Bearer ${token}` }
-    });
-    const courses = await res.json();
+  const base = 'https://byui.instructure.com';
 
-    const allAssignments = [];
+  const res = await fetch(`${base}/api/v1/courses`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const courses = await res.json();
 
-    for (const c of courses) {
-        try {
-            const aRes = await fetch(`${base}/api/v1/courses/${c.id}/assignments?include[]=submission`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const list = await aRes.json();
+  const allAssignments = [];
 
-            for (const a of list) {
-                const submission = a.submission;
-                const isSubmitted = submission && (submission.submitted_at || submission.workflow_state === 'submitted');
-                const isGraded = submission && submission.graded_at;
-                const isExcused = submission && submission.excused;
-
-                if (a.due_at && !isSubmitted && !isGraded && !isExcused) {
-                    allAssignments.push(a);
-                }
-            }
-        } catch (err) {
-            console.error("Error fetching assignments for course", c.name, err);
+  for (const c of courses) {
+    try {
+      const aRes = await fetch(
+        `${base}/api/v1/courses/${c.id}/assignments?include[]=submission`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
         }
-    }
+      );
+      const list = await aRes.json();
 
-    return allAssignments;
+      for (const a of list) {
+        const submitted = a.submission && (a.submission.submitted_at || a.submission.workflow_state === "graded");
+        if (a.due_at && !submitted) {
+          allAssignments.push(a);
+        }
+      }
+
+    } catch (err) {
+      console.error("Error fetching assignments for course", c.name, err);
+    }
+  }
+
+  return allAssignments;
 }
 
 
@@ -96,16 +105,7 @@ function prioritize(assignments) {
 
 
 
-    // Opens a new popup window for the chat interface
-    const otherBtn = document.getElementById("other");
 
-    otherBtn.addEventListener("click", () => {
-      window.open(
-        chrome.runtime.getURL("chat.html"),
-        "AI Chat",
-        "width=450,height=600,resizable=yes"
-      );
-    });
 
 
 
@@ -182,17 +182,10 @@ async function summarize(prompt) {
 }
 
 function stripMarkdown(text) {
-    return (text || "")
-        .replace(/^\s*\*\s+/gm, '- ')
-        .replace(/\*\*(.*?)\*\*/g, '$1')
-        .replace(/\*(.*?)\*/g, '$1')
-        .replace(/#{1,6}\s*/g, '')
-        .trim();
+  return (text || "")
+    .replace(/^\s*\*\s+/gm, '- ')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s*/g, '')
+    .trim();
 }
-
-async function otherGeminiQuestion(prompt) {
-    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here is their current question: \n\n${prompt}`);
-}
-
-
-//. Here is information about their assignments: ${}.
