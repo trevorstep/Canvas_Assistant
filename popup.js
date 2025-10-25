@@ -68,21 +68,21 @@ document.getElementById('fetch').addEventListener('click', async () => {
 
 
 
-
-
+async function extractPageText() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const [{ result }] = await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: () => {
+      const el = document.querySelector('#content.ic-Layout-contentMain[role="main"]');
+      return el ? el.innerText.slice(0, 20000) : '';
+    }
+  });
+  return result;
+}
 
 
 document.getElementById('summarize').addEventListener('click', async () => {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const tabId = tabs[0].id;
-
-    const [{ result }] = await chrome.scripting.executeScript({
-        target: { tabId },
-        func: () => document.body.innerText.slice(0, 20000)
-    });
-
-    const text = result;
-    // Placeholder summarization — replace with real API call later
-    const summary = text.split('.').slice(0, 3).join('.') + '...';
-    document.getElementById('summary').innerText = summary;
+  const text = await extractPageText();  
+  document.getElementById('summary').innerText = text;
 });
+
