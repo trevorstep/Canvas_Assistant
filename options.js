@@ -68,9 +68,7 @@ async function loadCourses() {
 
 // === Preferences Save ===
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load saved token into input field
   const token = await getToken();
-  if (token) document.getElementById('token').value = token;
 
   await loadCourses();
 
