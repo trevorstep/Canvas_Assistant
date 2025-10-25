@@ -35,7 +35,7 @@ function prioritize(assignments) {
         .map(a => ({ ...a, due_ts: new Date(a.due_at).getTime() }))
         .filter(a => a.due_ts > now)
         .sort((a, b) => a.due_ts - b.due_ts)
-        .slice(0, 5); // top 5
+        .slice(0, 5); 
 }
 
 document.getElementById('fetch').addEventListener('click', async () => {
@@ -56,6 +56,21 @@ document.getElementById('fetch').addEventListener('click', async () => {
         console.error(err);
     }
 });
+
+
+
+
+
+
+
+
+// dont work on anything above this line
+
+
+
+
+
+
 
 document.getElementById('summarize').addEventListener('click', async () => {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
