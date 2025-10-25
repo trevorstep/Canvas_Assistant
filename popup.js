@@ -216,14 +216,17 @@ document.getElementById("other").addEventListener("click", () => {
   });
   
 async function typewriter(text) {
-  const output = document.createElement("div");
-  document.body.appendChild(output);
+  const output = document.getElementById("output");
+  output.textContent = ""; 
 
-  for (let i = 0; i < text.length; i++) {
-    output.textContent += text[i];
-    await new Promise(resolve => setTimeout(resolve, 1000 / 30));
+  const words = text.split(" ");
+
+  for (let i = 0; i < words.length; i++) {
+    output.textContent += (i === 0 ? "" : " ") + words[i];
+    await new Promise(resolve => setTimeout(resolve, 1000)); 
   }
 }
+
 
 
   document.getElementById('send-btn').addEventListener('click', async () => {
