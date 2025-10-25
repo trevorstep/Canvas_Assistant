@@ -1,5 +1,6 @@
 const AI_ENDPOINT = "https://canvas-ai-endpoint-502269216279.us-central1.run.app";
-
+fetchedAssignments = fetchAssignments()
+const now = new Date();
 
 async function getToken() {
     const { canvasToken } = await chrome.storage.sync.get('canvasToken');
@@ -197,9 +198,8 @@ function stripMarkdown(text) {
 }
 
 async function otherGeminiQuestion(prompt) {
-    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here is their current question: \n\n${prompt}`);
+    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here are their assignments: ${fetchedAssignments}. The date and time is ${now.toString()}Here is their current question: \n\n${prompt}`);
 }
-
 document.getElementById("other").addEventListener("click", () => {
     const chatContainer = document.getElementById("chat-container");
   
