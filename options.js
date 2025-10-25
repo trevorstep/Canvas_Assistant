@@ -1,4 +1,12 @@
-document.getElementById('saved').addEventListener('click', async () => {
+document.getElementById('saveToken').addEventListener('click', async () => {
+  const token = document.getElementById('token').value;
+  await chrome.storage.sync.set({ canvasToken: token });
+  document.getElementById('status').textContent = 'Token saved!';
+});
+
+
+
+document.getElementById('savePreferences').addEventListener('click', async () => {
   const token = document.getElementById('token').value.trim();
   if (!token) return alert('Paste token');
   await chrome.storage.sync.set({ canvasToken: token });
@@ -61,7 +69,7 @@ async function loadCourses() {
 document.addEventListener('DOMContentLoaded', async () => {
   await loadCourses();
 
-  const savePrefsBtn = document.getElementById('savePrefs');
+  const savePrefsBtn = document.getElementById('savePreferences');
   if (savePrefsBtn) {
     savePrefsBtn.addEventListener('click', async () => {
       const checkboxes = document.querySelectorAll('#courseList input[type=checkbox]');
