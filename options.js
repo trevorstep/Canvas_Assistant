@@ -90,37 +90,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-const checkbox = document.getElementById('textNotifyCheckbox');
-const phoneContainer = document.getElementById('phoneInputContainer');
-const phoneInput = document.getElementById('phoneNumber');
-const statusMsg = document.getElementById('phoneStatus');
 
-checkbox.addEventListener('change', () => {
-  if (checkbox.checked) {
-    phoneContainer.classList.remove('hidden');
+
+
+
+document.getElementById('textNotifyCheckbox').addEventListener('change', (e) => {
+  const phoneBox = document.getElementById('phoneInputContainer');
+  if (e.target.checked) {
+    phoneBox.classList.remove('hidden');
   } else {
-    phoneContainer.classList.add('hidden');
+    phoneBox.classList.add('hidden');
   }
 });
 
+// Save phone number
 document.getElementById('savePhoneBtn').addEventListener('click', async () => {
-  const phone = phoneInput.value.trim();
-  if (!phone) {
-    statusMsg.textContent = 'Please enter a valid phone number.';
+  const phone = document.getElementById('phoneNumber').value.trim();
+  const carrier = document.getElementById('carrier').value.trim();
+  const statusMsg = document.getElementById('saveStatus');
+  
+  if (!phone || !carrier) {
+    statusMsg.textContent = '⚠ Please enter phone number AND carrier';
     statusMsg.style.color = '#fb7185';
     return;
   }
-
-  try {
-    await fetch('https://your-api-endpoint.com/savePhone', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone }),
-    });
-    statusMsg.textContent = 'Phone number saved successfully!';
-    statusMsg.style.color = '#4ade80';
-  } catch (err) {
-    statusMsg.textContent = 'Error saving number.';
-    statusMsg.style.color = '#fb7185';
-  }
+  
+  await chrome.storage.sync.set({ userPhone: phone, userCarrier: carrier });
+  
+  statusMsg.textContent = '✓ Saved!';
+  statusMsg.style.color = '#4ade80';
+  setTimeout(() => {
+    statusMsg.textContent = '';
+  }, 2000);
 });

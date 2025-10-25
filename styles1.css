@@ -207,7 +207,7 @@ button:hover {
   pointer-events: none;
 }
 
-#phoneNumber {
+#phoneNumber, #carrier {
   width: 100%;
   padding: 10px 12px;
   border-radius: 10px;
@@ -219,7 +219,7 @@ button:hover {
   transition: all 0.25s ease;
 }
 
-#phoneNumber:focus {
+#phoneNumber:focus, #carrier:focus {
   border-color: #7873f5;
   box-shadow: 0 0 6px rgba(120, 115, 245, 0.4);
   background: rgba(255, 255, 255, 0.8);
