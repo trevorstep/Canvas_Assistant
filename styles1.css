@@ -151,63 +151,64 @@ button:hover {
   min-height: 20px;
 }
 
-/* === Notifications Section === */
-.notifications-section {
-  margin-top: 30px;
-  background: rgba(255, 255, 255, 0.65);
-  border-radius: 15px;
+/* === Notification Section === */
+.notification-section {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   padding: 18px 22px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-top: 28px;
+  margin-bottom: 20px;
+  color: #1f2b6c;
   transition: all 0.25s ease-in-out;
 }
 
-.notifications-section:hover {
+.notification-section:hover {
   transform: scale(1.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.checkbox-container {
+.notification-section label {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 15px;
-  color: #1f2b6c;
-  margin-bottom: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
 }
 
-.checkbox-container input[type="checkbox"] {
+#textNotifyCheckbox {
   width: 18px;
   height: 18px;
   accent-color: #7873f5;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#textNotifyCheckbox:hover {
   transform: scale(1.1);
 }
 
 #phoneInputContainer {
+  margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: all 0.3s ease;
+  gap: 8px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-#phoneInputContainer.hidden {
-  max-height: 0;
-  opacity: 0;
-  margin-top: 0;
-  padding: 0;
-}
-
-.phone-label {
-  font-size: 14px;
-  color: #1f2b6c;
-  opacity: 0.85;
+.hidden {
+  display: none;
 }
 
 #phoneNumber, #carrier {
   width: 100%;
-  font-size: 15px;
-  padding: 10px;
+  padding: 10px 12px;
   border-radius: 10px;
-  border: 1px solid rgba(120, 120, 255, 0.3);
+  border: 1px solid rgba(120, 120, 255, 0.4);
   background: rgba(255, 255, 255, 0.6);
   font-size: 15px;
   color: #1f2b6c;
@@ -221,19 +222,26 @@ button:hover {
   background: rgba(255, 255, 255, 0.8);
 }
 
-#savePhone {
-  width: 100%;
+#savePhoneBtn {
   background: linear-gradient(90deg, #7873f5, #fb7185);
   color: white;
-  font-weight: 500;
-  padding: 10px;
   border: none;
+  padding: 10px 14px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(120, 115, 245, 0.3);
-  transition: all 0.25s ease;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(120, 115, 245, 0.25);
+  transition: all 0.25s ease-in-out;
 }
 
-#savePhone:hover {
+#savePhoneBtn:hover {
   transform: scale(1.04);
-  box-shadow: 0 6px 16px rgba(120, 115, 245, 0.4);
+  box-shadow: 0 6px 16px rgba(120, 115, 245, 0.35);
+}
+
+.status-message {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #4ade80;
+  text-align: center;
 }
