@@ -54,16 +54,14 @@ function prioritize(assignments) {
 
 
 
-// Opens a new popup window for the chat interface
-const otherBtn = document.getElementById("other");
+    // Toggles the in-popup chat interface
+    const otherBtn = document.getElementById("other");
+    const chatInterface = document.getElementById("chat-interface");
 
-otherBtn.addEventListener("click", () => {
-    window.open(
-        chrome.runtime.getURL("chat.html"),
-        "AI Chat",
-        "width=450,height=300,resizable=no"
-    );
-});
+    otherBtn.addEventListener("click", () => {
+    chatInterface.classList.toggle("collapsed");
+    });
+
 
 
 document.getElementById('fetch').addEventListener('click', async () => {
@@ -156,7 +154,7 @@ async function extractPageText() {
     return result;
 }
 
-
+// Summarize button
 document.getElementById('summarize').addEventListener('click', async () => {
     try {
         const text = await extractPageText();
@@ -167,6 +165,20 @@ document.getElementById('summarize').addEventListener('click', async () => {
     } catch (e) {
         console.error(e);
         document.getElementById('summary').innerText = "Error: " + e.message;
+        alert("Error: " + e.message);
+    }
+});
+
+// Send button
+document.getElementById('send-btn').addEventListener('click', async () => {
+    try {
+        const text = document.getElementById("user-input").value;
+
+        const answer = await otherGeminiQuestion(text);
+        alert(answer);
+        // document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
+    } catch (e) {
+        console.error(e);
         alert("Error: " + e.message);
     }
 });
@@ -198,3 +210,44 @@ function stripMarkdown(text) {
         .replace(/#{1,6}\s*/g, '')
         .trim();
 }
+
+
+document.getElementById("other").addEventListener("click", () => {
+    const chatContainer = document.getElementById("chat-container");
+  
+    // Toggle visibility (show/hide)
+    chatContainer.classList.toggle("active");
+  
+    // Optional: focus the input when opened
+    if (chatContainer.classList.contains("active")) {
+      document.getElementById("chat-input").focus();
+    }
+  });
+  
+  // Chat send button logic
+  document.getElementById("chat-send").addEventListener("click", () => {
+    const input = document.getElementById("chat-input");
+    const messages = document.getElementById("chat-messages");
+  
+    const userMessage = input.value.trim();
+    if (userMessage === "") return;
+  
+    // Add user's message
+    const userBubble = document.createElement("div");
+    userBubble.className = "user-bubble";
+    userBubble.textContent = userMessage;
+    messages.appendChild(userBubble);
+  
+    input.value = "";
+  
+    // Simulate AI response
+    const aiBubble = document.createElement("div");
+    aiBubble.className = "ai-bubble";
+    aiBubble.textContent = "Thinking...";
+    messages.appendChild(aiBubble);
+  
+    setTimeout(() => {
+      aiBubble.textContent = "Hello! This is your AI assistant 😊";
+    }, 800);
+  });
+  
