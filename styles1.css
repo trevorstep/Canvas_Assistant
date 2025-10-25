@@ -26,19 +26,13 @@ body::before {
   position: absolute;
   inset: -50px;
   border-radius: 50px;
-
+  z-index: 0; /* 🔥 puts it behind everything */
 }
 
-@keyframes rainbowBorder {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Ensure all interactive stuff is above */
+.container, input, button, h1, h2, p, #courseList, #status {
+  position: relative;
+  z-index: 1;
 }
 
 /* === Content container === */
