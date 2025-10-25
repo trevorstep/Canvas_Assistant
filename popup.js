@@ -76,11 +76,7 @@ function prioritize(assignments) {
         const saveButton = document.getElementById('savePhoneBtn');
         const phoneInput = document.getElementById('phoneNumber');
         const saveStatus = document.getElementById('saveStatus');
-
-        if (!checkbox || !phoneContainer) return;
-        phoneContainer.classList.toggle('hidden', !checkbox.checked);
-
-
+      
         // Show/hide phone input when checkbox is toggled
         if (checkbox && phoneContainer) {
         checkbox.addEventListener('change', () => {
@@ -89,7 +85,6 @@ function prioritize(assignments) {
           } else {
             phoneContainer.classList.add('hidden');
           }
-        phoneContainer.classList.toggle('hidden', !checkbox.checked);
         });
         }
       
