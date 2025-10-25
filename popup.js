@@ -177,7 +177,8 @@ async function summarize(prompt) {
 }
 
 async function shortSummarize(prompt) {
-    return await askGemini(`Summarize the most important parts of this text in 2 sentances:\n\n${prompt}`);
+    response = await askGemini(`Summarize the most important parts of this text in 2 sentances:\n\n${prompt}`);
+    return typewriter(response);
 }
 
 function stripMarkdown(text) {
@@ -205,8 +206,19 @@ document.getElementById("other").addEventListener("click", () => {
     }
   });
   
+async function typewriter(text) {
+  const output = document.createElement("div");
+  output.style.fontFamily = "monospace";
+  output.style.fontSize = "20px";
+  output.style.whiteSpace = "pre-wrap";
+  document.body.appendChild(output);
 
-  
+  for (let i = 0; i < text.length; i++) {
+    output.textContent += text[i];
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
 
   document.getElementById('send-btn').addEventListener('click', async () => {
     try {
