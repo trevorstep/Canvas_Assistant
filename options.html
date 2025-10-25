@@ -1,9 +1,20 @@
-<!doctype html>
-<html>
-  <body>
-    <label>Canvas API Token:</label>
-    <input id="token" style="width:400px"/>
-    <button id="save">Save token</button>
-    <script src="options.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas Helper – Settings</title>
+  <style>
+    body { font-family: sans-serif; padding: 1em; }
+    input { width: 100%; margin: 0.5em 0; }
+    button { padding: 0.5em 1em; }
+  </style>
+</head>
+<body>
+  <h2>Canvas API Settings</h2>
+  <p>Paste your Canvas API token here (from Account → Settings → New Access Token):</p>
+  <input id="token" placeholder="Paste token..." />
+  <button id="save">Save Token</button>
+
+  <script src="options.js"></script>
+</body>
 </html>
