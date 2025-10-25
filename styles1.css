@@ -1,3 +1,5 @@
+/* Completely made with ChatGPT */
+
 /* === Outer background === */
 body {
   font-family: "Segoe UI", Roboto, sans-serif;
@@ -24,20 +26,7 @@ body::before {
   position: absolute;
   inset: -50px;
   border-radius: 50px;
-  background: linear-gradient(
-    90deg,
-    #ff6ec4,
-    #7873f5,
-    #4ade80,
-    #facc15,
-    #fb7185,
-    #ff6ec4
-  );
-  background-size: 400%;
-  filter: blur(50px);
-  opacity: 0.6;
-  z-index: -2;
-  animation: rainbowBorder 12s linear infinite;
+
 }
 
 @keyframes rainbowBorder {
