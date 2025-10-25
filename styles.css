@@ -3,7 +3,7 @@
 body {
   font-family: "Segoe UI", Roboto, sans-serif;
   width: 380px; /* overall popup width */
-  height: 460px;
+  height: 320px;
   margin: 0;
   padding: 0;
   display: flex;
