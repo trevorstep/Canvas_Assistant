@@ -8,6 +8,9 @@
         "activeTab",
         "scripting"
     ],
+    "background": {
+        "service_worker": "background.js"
+    },
     "host_permissions": [
         "https://*.instructure.com/*"
     ],
@@ -42,6 +45,16 @@
             ],
             "js": [
                 "content.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["popup.html",
+                "styles.css"
+            ],
+            "matches": [
+                "<all_urls>"
             ]
         }
     ]
