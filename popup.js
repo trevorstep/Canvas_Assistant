@@ -223,7 +223,7 @@ async function typewriter(text) {
 
   for (let i = 0; i < words.length; i++) {
     output.textContent += (i === 0 ? "" : " ") + words[i];
-    await new Promise(resolve => setTimeout(resolve, 1000)); 
+    await new Promise(resolve => setTimeout(resolve, 100)); 
   }
 }
 
