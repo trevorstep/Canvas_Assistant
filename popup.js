@@ -37,9 +37,8 @@ async function fetchAssignments() {
 
 function prioritize(assignments) {
     const now = Date.now();
-    const weekMs = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
+    const weekMs = 7 * 24 * 60 * 60 * 1000; 
 
-    // Step 1: Filter to only assignments due within a week
     const upcoming = assignments
         .map(a => ({
             ...a,
@@ -50,25 +49,20 @@ function prioritize(assignments) {
 
     if (upcoming.length === 0) return [];
 
-    // Step 2: Normalize weight so point values scale from 0 to 1
     const maxPoints = Math.max(...upcoming.map(a => a.points || 0)) || 1;
 
-    // Step 3: Compute priority score
     const scored = upcoming.map(a => {
         const timeUntilDue = a.due_ts - now;
-        const urgencyScore = Math.max(0, 1 - timeUntilDue / weekMs); // closer = higher
-        const weightScore = a.points / maxPoints; // higher points = higher importance
+        const urgencyScore = Math.max(0, 1 - timeUntilDue / weekMs); 
+        const weightScore = a.points / maxPoints; 
 
-        // Adjust balance of urgency vs weight here
         const priorityScore = (urgencyScore * 0.6) + (weightScore * 0.4);
 
         return { ...a, urgencyScore, weightScore, priorityScore };
     });
 
-    // Step 4: Sort by score descending (most important first)
     scored.sort((a, b) => b.priorityScore - a.priorityScore);
 
-    // Step 5: Limit to top 5 results (optional)
     return scored.slice(0, 5);
 }
 
