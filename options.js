@@ -1,28 +1,27 @@
+// === Save Token Button ===
 document.getElementById('saveToken').addEventListener('click', async () => {
-  const token = document.getElementById('token').value;
+  const token = document.getElementById('token').value.trim();
+  if (!token) return alert('Please paste your Canvas token first.');
+
   await chrome.storage.sync.set({ canvasToken: token });
   document.getElementById('status').textContent = 'Token saved!';
+  setTimeout(() => (document.getElementById('status').textContent = ''), 2000);
 });
 
 
-
-document.getElementById('savePreferences').addEventListener('click', async () => {
-  const token = document.getElementById('token').value.trim();
-  if (!token) return alert('Paste token');
-  await chrome.storage.sync.set({ canvasToken: token });
-  alert('Saved');
-});
-
+// === Load saved token on startup ===
 async function getToken() {
   const { canvasToken } = await chrome.storage.sync.get('canvasToken');
   return canvasToken;
 }
 
+
+// === Load Courses ===
 async function loadCourses() {
   const listDiv = document.getElementById('courseList');
-  const token = await getToken();
-
   if (!listDiv) return;
+
+  const token = await getToken();
 
   if (!token) {
     listDiv.textContent = 'No Canvas token found. Save your token first.';
@@ -45,7 +44,7 @@ async function loadCourses() {
 
     const { excludedCourses = [] } = await chrome.storage.sync.get('excludedCourses');
 
-    listDiv.innerHTML = ''; 
+    listDiv.innerHTML = '';
     courses.forEach(c => {
       const label = document.createElement('label');
       label.style.display = 'block';
@@ -54,7 +53,7 @@ async function loadCourses() {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.value = c.id;
-      checkbox.checked = !excludedCourses.includes(c.id); 
+      checkbox.checked = !excludedCourses.includes(c.id);
       label.appendChild(checkbox);
       label.append(` ${c.name}`);
       listDiv.appendChild(label);
@@ -66,15 +65,23 @@ async function loadCourses() {
   }
 }
 
+
+// === Preferences Save ===
 document.addEventListener('DOMContentLoaded', async () => {
+  // Load saved token into input field
+  const token = await getToken();
+  if (token) document.getElementById('token').value = token;
+
   await loadCourses();
 
   const savePrefsBtn = document.getElementById('savePreferences');
   if (savePrefsBtn) {
     savePrefsBtn.addEventListener('click', async () => {
+      const token = await getToken();
+      if (!token) return alert('No token found. Please save your Canvas token first.');
+
       const checkboxes = document.querySelectorAll('#courseList input[type=checkbox]');
       const excludedCourses = [];
-
       checkboxes.forEach(cb => {
         if (!cb.checked) excludedCourses.push(parseInt(cb.value));
       });
