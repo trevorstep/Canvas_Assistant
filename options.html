@@ -10,10 +10,19 @@
   </style>
 </head>
 <body>
-  <h2>Canvas API Settings</h2>
+  <h1>Canvas API Settings</h1>
   <p>Paste your Canvas API token here (from Account → Settings → New Access Token):</p>
   <input id="token" placeholder="Paste token..." />
   <button id="save">Save Token</button>
+
+<h2>Canvas Prioritizer Settings</h2>
+
+  <p>Choose which courses to include when prioritizing assignments:</p>
+  <div id="courseList">Loading your courses...</div>
+
+  <br>
+  <button id="save">Save Preferences</button>
+  <p id="status"></p>
 
   <script src="options.js"></script>
 </body>

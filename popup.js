@@ -47,7 +47,7 @@ function prioritize(assignments) {
             due_ts: new Date(a.due_at).getTime(),
             points: a.points_possible || 0
         }))
-        .filter(a => a.due_ts && (a.due_ts - now) <= weekMs)
+        .filter(a => a.due_ts > now && (a.due_ts - now) <= weekMs);
     console.log("Upcoming filtered assignments:", upcoming);
 
 
