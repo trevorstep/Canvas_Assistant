@@ -99,10 +99,12 @@ document.getElementById('fetch').addEventListener('click', async () => {
                     const details = await res.json();
 
                     const description = details.description
-                        ? details.description.replace(/<[^>]*>/g, '') // strip HTML tags
+                        ? details.description.replace(/<[^>]*>/g, '')
                         : "No description provided.";
 
-                    const result = await askGemini(`Summarize this Canvas assignment:\n\n${description}`);
+                    const result = await async function summarize(prompt) {
+    return await shortSummarize(`Summarize the most important parts of this text:\n\n${prompt}`);
+}(`Summarize this Canvas assignment:\n\n${description}`);
                     const clean = stripMarkdown(result);
 
                     const summaryEl = document.createElement('div');
@@ -181,6 +183,10 @@ async function askGemini(prompt) {
 
 async function summarize(prompt) {
     return await askGemini(`Summarize the most important parts of this text:\n\n${prompt}`);
+}
+
+async function shortSummarize(prompt) {
+    return await askGemini(`Summarize the most important parts of this text; be brief:\n\n${prompt}`);
 }
 
 function stripMarkdown(text) {
