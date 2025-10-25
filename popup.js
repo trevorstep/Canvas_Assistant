@@ -196,6 +196,9 @@ function stripMarkdown(text) {
     .trim();
 }
 
+async function otherGeminiQuestion(prompt) {
+    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here is their current question: \n\n${prompt}`);
+}
 
 document.getElementById("other").addEventListener("click", () => {
     const chatContainer = document.getElementById("chat-container");
