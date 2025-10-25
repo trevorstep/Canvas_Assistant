@@ -2,58 +2,65 @@ const AI_ENDPOINT = "https://canvas-ai-endpoint-502269216279.us-central1.run.app
 
 
 async function getToken() {
-    const { canvasToken } = await chrome.storage.sync.get('canvasToken');
-    return canvasToken;
+  const { canvasToken } = await chrome.storage.sync.get('canvasToken');
+  return canvasToken;
 }
 
 async function fetchAssignments() {
-    const token = await getToken();
-    if (!token) return alert('No token saved — go to Options to add one.');
+  const token = await getToken();
+  if (!token) {
+    alert('No token saved — go to Options to add one.');
+    return [];
+  }
 
-    const base = 'https://byui.instructure.com';
-    const res = await fetch(`${base}/api/v1/courses?enrollment_state=active`, {
-        headers: { Authorization: `Bearer ${token}` }
-    });
-    const courses = await res.json();
+  const base = 'https://byui.instructure.com';
 
-    const allAssignments = [];
-    const now = new Date();
-    const todayStr = now.toISOString().slice(0, 10);
-    const weekFromNow = now.getTime() + 7 * 24 * 60 * 60 * 1000;
+  const res = await fetch(`${base}/api/v1/courses`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const courses = await res.json();
 
-    for (const c of courses) {
-        try {
-            const aRes = await fetch(`${base}/api/v1/courses/${c.id}/assignments?include[]=submission`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const list = await aRes.json();
+  const allAssignments = [];
 
-            for (const a of list) {
-                if (!a.due_at) continue;
+  const now = new Date();
+  const nextWeek = new Date();
+  nextWeek.setDate(now.getDate() + 7);
 
-                const dueDate = new Date(a.due_at);
-                const dueTime = dueDate.getTime();
-                const sub = a.submission;
-                const isSubmitted = sub && (sub.submitted_at || sub.workflow_state === "submitted");
-                const isGraded = sub && sub.graded_at;
-                const isExcused = sub && sub.excused;
-
-                if (!isSubmitted && !isGraded && !isExcused && dueTime <= weekFromNow) {
-                    allAssignments.push({
-                        ...a,
-                        due_ts: dueTime,
-                        due_str: dueDate.toISOString().slice(0, 10),
-                        points: a.points_possible || 0
-                    });
-                }
-            }
-        } catch (err) {
-            console.error("Error fetching assignments for course", c.name, err);
+  for (const c of courses) {
+    try {
+      const aRes = await fetch(
+        `${base}/api/v1/courses/${c.id}/assignments?include[]=submission`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
         }
-    }
+      );
+      const list = await aRes.json();
 
-    return prioritize(allAssignments, todayStr);
+      for (const a of list) {
+        if (!a.due_at) continue;
+
+        const due = new Date(a.due_at);
+        if (due >= now && due <= nextWeek) {
+          allAssignments.push({
+            name: a.name,
+            due_at: a.due_at,
+            course: c.name,
+            html_url: a.html_url
+          });
+        }
+      }
+
+    } catch (err) {
+      console.error("Error fetching assignments for course", c.name, err);
+    }
+  }
+
+  // 5. Optional: sort by due date
+  allAssignments.sort((a, b) => new Date(a.due_at) - new Date(b.due_at));
+
+  return allAssignments;
 }
+
 
 
 function prioritize(assignments, todayStr) {
