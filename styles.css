@@ -1,4 +1,5 @@
 /* === Outer popup (the full window) === */
+/* The following code was created by the help of ChatGPT */
 body {
   font-family: "Segoe UI", Roboto, sans-serif;
   width: 380px; /* overall popup width */
@@ -132,61 +133,51 @@ button:hover {
   font-size: 16px;
 }
 
-#chat-container {
+.hidden {
   display: none;
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: 280px;
-  height: 350px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
 }
 
-#chat-container.active {
-  display: block;
+#chat-container {
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 #chat-box {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-#chat-messages {
-  flex-grow: 1;
+  max-height: 200px;
   overflow-y: auto;
+  margin-bottom: 8px;
+  padding: 5px;
+}
+
+#chat-container input {
+  width: calc(100% - 60px);
   padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-#chat-input {
-  margin-top: 8px;
-  padding: 6px;
+#chat-container button {
+  width: 50px;
+  margin-left: 5px;
+  padding: 8px;
+  border-radius: 8px;
   border: none;
-  border-radius: 8px;
-  width: 100%;
-}
-
-.user-bubble,
-.ai-bubble {
-  margin: 5px 0;
-  padding: 8px 10px;
-  border-radius: 8px;
-  max-width: 80%;
-}
-
-.user-bubble {
-  background-color: #007aff;
+  background: #7873f5;
   color: white;
-  align-self: flex-end;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.ai-bubble {
-  background-color: rgba(255, 255, 255, 0.3);
-  color: black;
-  align-self: flex-start;
+#chat-container button:hover {
+  background: #4ade80;
 }
+

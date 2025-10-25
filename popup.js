@@ -45,22 +45,27 @@ function prioritize(assignments) {
             if (!a.due_at) return false;
             const dueTs = new Date(a.due_at).getTime();
             const notSubmitted = !a.has_submitted_submissions && !a.submission?.submitted_at;
-            return notSubmitted && dueTs >= now && (dueTs - now) <= twoWeeksMs;
+            return notSubmitted && dueTs >= (now - 12 * 60 * 60 * 1000) && (dueTs - now) <= twoWeeksMs;
         })
-        .sort((a, b) => new Date(a.due_at) - new Date(b.due_at)); 
+        .sort((a, b) => new Date(a.due_at) - new Date(b.due_at));
 
     return upcoming;
 }
 
 
 
-    // Toggles the in-popup chat interface
-    const otherBtn = document.getElementById("other");
-    const chatInterface = document.getElementById("chat-interface");
-
-    otherBtn.addEventListener("click", () => {
-    chatInterface.classList.toggle("collapsed");
-    });
+    // Toggles the in-popup chat interface. This function was made with the help of ChatGPT.
+    document.addEventListener("DOMContentLoaded", () => {
+        const otherBtn = document.getElementById("other");
+        const chatContainer = document.getElementById("chat-container");
+        
+        if (otherBtn && chatContainer) {
+          otherBtn.addEventListener("click", () => {
+            chatContainer.classList.toggle("hidden");
+          });
+        }
+      });
+      
 
 
 
@@ -140,7 +145,7 @@ async function extractPageText() {
     return result;
 }
 
-// Summarize button
+
 document.getElementById('summarize').addEventListener('click', async () => {
     try {
         const text = await extractPageText();
@@ -151,20 +156,6 @@ document.getElementById('summarize').addEventListener('click', async () => {
     } catch (e) {
         console.error(e);
         document.getElementById('summary').innerText = "Error: " + e.message;
-        alert("Error: " + e.message);
-    }
-});
-
-// Send button
-document.getElementById('send-btn').addEventListener('click', async () => {
-    try {
-        const text = document.getElementById("user-input").value;
-
-        const answer = await otherGeminiQuestion(text);
-        alert(answer);
-        // document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
-    } catch (e) {
-        console.error(e);
         alert("Error: " + e.message);
     }
 });
