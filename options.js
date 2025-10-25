@@ -1,4 +1,12 @@
-document.getElementById('save').addEventListener('click', async () => {
+document.getElementById('saveToken').addEventListener('click', async () => {
+  const token = document.getElementById('token').value;
+  await chrome.storage.sync.set({ canvasToken: token });
+  document.getElementById('status').textContent = 'Token saved!';
+});
+
+
+
+document.getElementById('savePreferences').addEventListener('click', async () => {
   const token = document.getElementById('token').value.trim();
   if (!token) return alert('Paste token');
   await chrome.storage.sync.set({ canvasToken: token });
@@ -61,7 +69,7 @@ async function loadCourses() {
 document.addEventListener('DOMContentLoaded', async () => {
   await loadCourses();
 
-  const savePrefsBtn = document.getElementById('savePrefs');
+  const savePrefsBtn = document.getElementById('savePreferences');
   if (savePrefsBtn) {
     savePrefsBtn.addEventListener('click', async () => {
       const checkboxes = document.querySelectorAll('#courseList input[type=checkbox]');
@@ -79,5 +87,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => (status.textContent = ''), 1500);
       }
     });
+  }
+});
+
+const checkbox = document.getElementById('textNotifyCheckbox');
+const phoneContainer = document.getElementById('phoneInputContainer');
+const phoneInput = document.getElementById('phoneNumber');
+const statusMsg = document.getElementById('phoneStatus');
+
+checkbox.addEventListener('change', () => {
+  if (checkbox.checked) {
+    phoneContainer.classList.remove('hidden');
+  } else {
+    phoneContainer.classList.add('hidden');
+  }
+});
+
+document.getElementById('savePhoneBtn').addEventListener('click', async () => {
+  const phone = phoneInput.value.trim();
+  if (!phone) {
+    statusMsg.textContent = 'Please enter a valid phone number.';
+    statusMsg.style.color = '#fb7185';
+    return;
+  }
+
+  try {
+    await fetch('https://your-api-endpoint.com/savePhone', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone }),
+    });
+    statusMsg.textContent = 'Phone number saved successfully!';
+    statusMsg.style.color = '#4ade80';
+  } catch (err) {
+    statusMsg.textContent = 'Error saving number.';
+    statusMsg.style.color = '#fb7185';
   }
 });

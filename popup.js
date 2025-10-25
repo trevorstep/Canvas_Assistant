@@ -58,26 +58,65 @@ function prioritize(assignments) {
     document.addEventListener("DOMContentLoaded", () => {
         const otherBtn = document.getElementById("other");
         const chatContainer = document.getElementById("chat-container");
-        const userInput = document.getElementById("user-input");
-        const sendBtn = document.getElementById("send-btn");
         
         if (otherBtn && chatContainer) {
           otherBtn.addEventListener("click", () => {
             chatContainer.classList.toggle("hidden");
           });
         }
-
-        if (userInput && sendBtn) {
-          userInput.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") {
-              sendBtn.click();
-            }
-          });
-        }
       });
       
 
-
+      document.addEventListener('DOMContentLoaded', () => {
+        const checkbox = document.getElementById('textNotifyCheckbox');
+        const phoneContainer = document.getElementById('phoneInputContainer');
+        const saveButton = document.getElementById('savePhoneBtn');
+        const phoneInput = document.getElementById('phoneNumber');
+        const saveStatus = document.getElementById('saveStatus');
+      
+        // Show/hide phone input when checkbox is toggled
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            phoneContainer.classList.remove('hidden');
+          } else {
+            phoneContainer.classList.add('hidden');
+          }
+        });
+      
+        // Handle save button click
+        saveButton.addEventListener('click', async () => {
+          const phone = phoneInput.value.trim();
+      
+          if (!phone) {
+            saveStatus.textContent = "Please enter your phone number.";
+            saveStatus.style.color = "red";
+            return;
+          }
+      
+          try {
+            const response = await fetch('https://your-api-url.com/save-number', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ phone }),
+            });
+      
+            if (response.ok) {
+              saveStatus.textContent = "Phone number saved successfully!";
+              saveStatus.style.color = "green";
+            } else {
+              saveStatus.textContent = "Failed to save number.";
+              saveStatus.style.color = "red";
+            }
+          } catch (error) {
+            console.error("Error saving number:", error);
+            saveStatus.textContent = "Error connecting to server.";
+            saveStatus.style.color = "red";
+          }
+        });
+      });
+      
 
 document.getElementById('fetch').addEventListener('click', async () => {
     const list = document.getElementById('assignments');
@@ -215,8 +254,19 @@ document.getElementById("other").addEventListener("click", () => {
     }
   });
   
+async function typewriter(text) {
+  const output = document.createElement("div");
+  output.style.fontFamily = "monospace";
+  output.style.fontSize = "20px";
+  output.style.whiteSpace = "pre-wrap";
+  document.body.appendChild(output);
 
-  
+  for (let i = 0; i < text.length; i++) {
+    output.textContent += text[i];
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
 
   document.getElementById('send-btn').addEventListener('click', async () => {
     try {

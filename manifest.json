@@ -10,6 +10,9 @@
         "alarms",
         "notifications"
     ],
+    "background": {
+        "service_worker": "background.js"
+    },
     "host_permissions": [
         "https://*.instructure.com/*"
     ],
@@ -32,6 +35,12 @@
             "description": "Open Canvas Helper popup"
         }
     },
+    "icons": {
+        "16": "CA.png",
+        "32": "CA.png",
+        "48": "CA.png",
+        "128": "CA.png"
+    },
     "content_scripts": [
         {
             "matches": [
@@ -39,6 +48,16 @@
             ],
             "js": [
                 "content.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["popup.html",
+                "styles.css"
+            ],
+            "matches": [
+                "<all_urls>"
             ]
         }
     ]
