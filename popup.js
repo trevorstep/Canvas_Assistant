@@ -37,32 +37,33 @@ async function fetchAssignments() {
 
 function prioritize(assignments) {
     const now = Date.now();
-    const twoWeeksMs = 14 * 24 * 60 * 60 * 1000; 
+    const twoWeeksMs = 14 * 24 * 60 * 60 * 1000;
 
     const upcoming = assignments
         .filter(a => {
             if (!a.due_at) return false;
             const dueTs = new Date(a.due_at).getTime();
             const notSubmitted = !a.has_submitted_submissions && !a.submission?.submitted_at;
-            return notSubmitted && dueTs >= now && (dueTs - now) <= twoWeeksMs;
+            return notSubmitted && dueTs >= (now - 12 * 60 * 60 * 1000) && (dueTs - now) <= twoWeeksMs;
         })
-        .sort((a, b) => new Date(a.due_at) - new Date(b.due_at)); 
+        .sort((a, b) => new Date(a.due_at) - new Date(b.due_at));
 
     return upcoming;
 }
 
 
 
-    // Opens a new popup window for the chat interface
-    const otherBtn = document.getElementById("other");
 
-    otherBtn.addEventListener("click", () => {
-      window.open(
+// Opens a new popup window for the chat interface
+const otherBtn = document.getElementById("other");
+
+otherBtn.addEventListener("click", () => {
+    window.open(
         chrome.runtime.getURL("chat.html"),
         "AI Chat",
         "width=450,height=300,resizable=no"
-      );
-    });
+    );
+});
 
 
 document.getElementById('fetch').addEventListener('click', async () => {
@@ -76,6 +77,18 @@ document.getElementById('fetch').addEventListener('click', async () => {
 
         for (const a of prioritized) {
             const li = document.createElement('li');
+            const markBtn = document.createElement('button');
+            markBtn.textContent = "Mark Complete";
+            markBtn.style.marginLeft = "10px";
+
+            markBtn.addEventListener('click', () => {
+                li.style.textDecoration = "line-through";
+                li.style.opacity = "0.6";
+                markBtn.disabled = true;
+                markBtn.textContent = "Completed";
+            });
+
+
             li.textContent = `${a.name} — due ${new Date(a.due_at).toLocaleString()} `;
 
             const summarizeBtn = document.createElement('button');
@@ -99,8 +112,8 @@ document.getElementById('fetch').addEventListener('click', async () => {
                         : "No description provided.";
 
                     const result = await async function summarize(prompt) {
-    return await shortSummarize(`Summarize the most important parts of this text:\n\n${prompt}`);
-}(`Summarize this Canvas assignment:\n\n${description}`);
+                        return await shortSummarize(`Summarize the most important parts of this text:\n\n${prompt}`);
+                    }(`Summarize this Canvas assignment:\n\n${description}`);
                     const clean = stripMarkdown(result);
 
                     const summaryEl = document.createElement('div');
@@ -118,8 +131,10 @@ document.getElementById('fetch').addEventListener('click', async () => {
                 }
             });
 
+            li.appendChild(markBtn);
             li.appendChild(summarizeBtn);
             list.appendChild(li);
+
         }
     } catch (err) {
         list.innerHTML = 'Error fetching assignments.';
@@ -147,7 +162,7 @@ document.getElementById('summarize').addEventListener('click', async () => {
         const text = await extractPageText();
         document.getElementById('summary').innerText = "Thinking…";
 
-        const answer = await summarize(text);  // await the promise
+        const answer = await summarize(text);
         document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
     } catch (e) {
         console.error(e);
@@ -176,10 +191,10 @@ async function shortSummarize(prompt) {
 }
 
 function stripMarkdown(text) {
-  return (text || "")
-    .replace(/^\s*\*\s+/gm, '- ')
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    .replace(/#{1,6}\s*/g, '')
-    .trim();
+    return (text || "")
+        .replace(/^\s*\*\s+/gm, '- ')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/#{1,6}\s*/g, '')
+        .trim();
 }
