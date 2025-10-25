@@ -80,7 +80,6 @@ function prioritize(assignments) {
     });
 
 
-
 document.getElementById('fetch').addEventListener('click', async () => {
     const list = document.getElementById('assignments');
     list.innerHTML = 'Loading...';
@@ -142,16 +141,6 @@ document.getElementById('fetch').addEventListener('click', async () => {
         console.error(err);
     }
 });
-
-
-
-
-
-
-
-
-
-// dont work on anything above this line
 
 
 
