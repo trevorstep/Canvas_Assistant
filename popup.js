@@ -10,7 +10,7 @@ async function fetchAssignments() {
     const token = await getToken();
     if (!token) return alert('No token saved — go to Options to add one.');
 
-    const base = `https://${'https://canvas.instructure.com'}`;
+    const base = 'https://canvas.instructure.com';
     const res = await fetch(`${base}/api/v1/courses?enrollment_state=active`, {
         headers: { Authorization: `Bearer ${token}` }
     });
@@ -33,18 +33,6 @@ async function fetchAssignments() {
 
         return allAssignments;
     }
-
-    function prioritize(assignments) {
-        const now = Date.now();
-        return assignments
-            .map(a => ({ ...a, due_ts: new Date(a.due_at).getTime() }))
-            .filter(a => a.due_ts > now)
-            .sort((a, b) => a.due_ts - b.due_ts)
-            .slice(0, 5);
-    }
-
-
-
 
 
     function prioritize(assignments) {
