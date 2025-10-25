@@ -99,14 +99,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 
-document.getElementById('textNotifyCheckbox').addEventListener('change', (e) => {
+document.addEventListener('DOMContentLoaded', () => {
+  const textNotifyCheckbox = document.getElementById('textNotifyCheckbox');
   const phoneBox = document.getElementById('phoneInputContainer');
-  if (e.target.checked) {
-    phoneBox.classList.remove('hidden');
-  } else {
-    phoneBox.classList.add('hidden');
-  }
+
+  if (!textNotifyCheckbox || !phoneBox) return; // Safety check
+
+  // Function to toggle visibility of phone input container
+  const togglePhoneBoxVisibility = () => {
+    if (textNotifyCheckbox.checked) {
+      phoneBox.classList.remove('hidden'); // Show phone input container
+    } else {
+      phoneBox.classList.add('hidden'); // Hide phone input container
+    }
+  };
+
+  // Set initial visibility based on checkbox state
+  togglePhoneBoxVisibility();
+
+  // Add event listener to toggle visibility on checkbox change
+  textNotifyCheckbox.addEventListener('change', togglePhoneBoxVisibility);
 });
+
 
 // Save phone number
 document.getElementById('savePhoneBtn').addEventListener('click', async () => {
