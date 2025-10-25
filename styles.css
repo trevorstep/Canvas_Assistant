@@ -122,8 +122,14 @@ button:hover {
 
 #assignments li {
   margin: 6px;
-  font-size: 14px;
+  font-size: 16px;
   background: rgba(240, 240, 255, 0.6);
   border-radius: 6px;
   padding: 6px 10px;
+}
+
+#summary {
+  font-size: 16px;
+  /* padding: 10px;
+  text-align: left; */
 }
