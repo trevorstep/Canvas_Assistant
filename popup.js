@@ -156,7 +156,7 @@ async function extractPageText() {
     return result;
 }
 
-
+// Summarize button
 document.getElementById('summarize').addEventListener('click', async () => {
     try {
         const text = await extractPageText();
@@ -167,6 +167,20 @@ document.getElementById('summarize').addEventListener('click', async () => {
     } catch (e) {
         console.error(e);
         document.getElementById('summary').innerText = "Error: " + e.message;
+        alert("Error: " + e.message);
+    }
+});
+
+// Send button
+document.getElementById('send-btn').addEventListener('click', async () => {
+    try {
+        const text = document.getElementById("user-input").value;
+
+        const answer = await otherGeminiQuestion(text);
+        alert(answer);
+        // document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
+    } catch (e) {
+        console.error(e);
         alert("Error: " + e.message);
     }
 });
@@ -198,3 +212,11 @@ function stripMarkdown(text) {
     .replace(/#{1,6}\s*/g, '')
     .trim();
 }
+
+async function otherGeminiQuestion(prompt) {
+    return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here is their current question: \n\n${prompt}`);
+}
+
+
+
+
