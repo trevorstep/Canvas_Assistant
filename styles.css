@@ -1,28 +1,29 @@
+/* === Outer popup (the full window) === */
 body {
     font-family: "Segoe UI", Roboto, sans-serif;
-    width: 380px; /* slightly wider */
-    min-height: 360px; /* slightly taller */
+    width: 380px; /* overall popup width */
+    height: 460px;
     margin: 0;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.85); /* semi-transparent for airy look */
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    color: #1f2b6c;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15); /* soft transparency */
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border-radius: 28px;
     position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+    overflow: visible;
+    box-shadow: 0 0 45px rgba(0, 0, 0, 0.2);
+    color: #1f2b6c;
   }
   
-  /* Soft, glowing animated border */
+  /* === Glowing rainbow aura around popup === */
   body::before {
     content: "";
     position: absolute;
-    top: -20px;
-    left: -20px;
-    right: -20px;
-    bottom: -20px;
-    border-radius: 30px;
+    inset: -40px;
+    border-radius: 40px;
     background: linear-gradient(
       90deg,
       #ff6ec4,
@@ -33,20 +34,25 @@ body {
       #ff6ec4
     );
     background-size: 400%;
-    filter: blur(22px);
+    filter: blur(40px);
     opacity: 0.6;
     z-index: -2;
-    animation: rainbowBorder 10s linear infinite;
+    animation: rainbowBorder 12s linear infinite;
   }
   
-  /* inner solid layer */
-  body::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
+  /* === Centered content card === */
+  .container {
+    width: 80%;
+    min-height: 370px;
     background: rgba(255, 255, 255, 0.85);
-    z-index: -1;
+    backdrop-filter: blur(15px) saturate(160%);
+    -webkit-backdrop-filter: blur(15px) saturate(160%);
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
   }
   
   @keyframes rainbowBorder {
@@ -61,18 +67,17 @@ body {
     }
   }
   
-  /* Typography */
+  /* === Typography === */
   h2 {
     margin-top: 0;
     font-size: 22px;
-    text-align: center;
     margin-bottom: 18px;
     background: linear-gradient(90deg, #7873f5, #fb7185);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   
-  /* Buttons */
+  /* === Buttons === */
   button {
     margin-top: 10px;
     width: 100%;
@@ -94,7 +99,7 @@ body {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
   }
   
-  /* Assignments list */
+  /* === Assignments list === */
   #assignments {
     list-style: none;
     padding: 0;
