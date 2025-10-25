@@ -10,7 +10,7 @@ async function fetchAssignments() {
     const token = await getToken();
     if (!token) return alert('No token saved — go to Options to add one.');
 
-    const base = 'https://canvas.instructure.com';
+    const base = 'https://byui.instructure.com';
     const res = await fetch(`${base}/api/v1/courses?enrollment_state=active`, {
         headers: { Authorization: `Bearer ${token}` }
     });
