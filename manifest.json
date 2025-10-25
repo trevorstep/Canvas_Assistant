@@ -29,6 +29,12 @@
             "description": "Open Canvas Helper popup"
         }
     },
+    "icons": {
+        "16": "CA.png",
+        "32": "CA.png",
+        "48": "CA.png",
+        "128": "CA.png"
+    },
     "content_scripts": [
         {
             "matches": [
