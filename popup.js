@@ -67,7 +67,56 @@ function prioritize(assignments) {
       });
       
 
-
+      document.addEventListener('DOMContentLoaded', () => {
+        const checkbox = document.getElementById('textNotifyCheckbox');
+        const phoneContainer = document.getElementById('phoneInputContainer');
+        const saveButton = document.getElementById('savePhoneBtn');
+        const phoneInput = document.getElementById('phoneNumber');
+        const saveStatus = document.getElementById('saveStatus');
+      
+        // Show/hide phone input when checkbox is toggled
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            phoneContainer.classList.remove('hidden');
+          } else {
+            phoneContainer.classList.add('hidden');
+          }
+        });
+      
+        // Handle save button click
+        saveButton.addEventListener('click', async () => {
+          const phone = phoneInput.value.trim();
+      
+          if (!phone) {
+            saveStatus.textContent = "Please enter your phone number.";
+            saveStatus.style.color = "red";
+            return;
+          }
+      
+          try {
+            const response = await fetch('https://your-api-url.com/save-number', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ phone }),
+            });
+      
+            if (response.ok) {
+              saveStatus.textContent = "Phone number saved successfully!";
+              saveStatus.style.color = "green";
+            } else {
+              saveStatus.textContent = "Failed to save number.";
+              saveStatus.style.color = "red";
+            }
+          } catch (error) {
+            console.error("Error saving number:", error);
+            saveStatus.textContent = "Error connecting to server.";
+            saveStatus.style.color = "red";
+          }
+        });
+      });
+      
 
 document.getElementById('fetch').addEventListener('click', async () => {
     const list = document.getElementById('assignments');

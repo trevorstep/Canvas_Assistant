@@ -89,3 +89,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
+
+const checkbox = document.getElementById('textNotifyCheckbox');
+const phoneContainer = document.getElementById('phoneInputContainer');
+const phoneInput = document.getElementById('phoneNumber');
+const statusMsg = document.getElementById('phoneStatus');
+
+checkbox.addEventListener('change', () => {
+  if (checkbox.checked) {
+    phoneContainer.classList.remove('hidden');
+  } else {
+    phoneContainer.classList.add('hidden');
+  }
+});
+
+document.getElementById('savePhoneBtn').addEventListener('click', async () => {
+  const phone = phoneInput.value.trim();
+  if (!phone) {
+    statusMsg.textContent = 'Please enter a valid phone number.';
+    statusMsg.style.color = '#fb7185';
+    return;
+  }
+
+  try {
+    await fetch('https://your-api-endpoint.com/savePhone', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone }),
+    });
+    statusMsg.textContent = 'Phone number saved successfully!';
+    statusMsg.style.color = '#4ade80';
+  } catch (err) {
+    statusMsg.textContent = 'Error saving number.';
+    statusMsg.style.color = '#fb7185';
+  }
+});
