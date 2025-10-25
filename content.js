@@ -3,3 +3,4 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ text: document.body.innerText });
   }
 });
+
