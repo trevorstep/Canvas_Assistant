@@ -2,7 +2,7 @@ body {
     margin: 0;
     font-family: "Segoe UI", Roboto, sans-serif;
     width: 450px;
-    height: 600px;
+    height: 250px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);

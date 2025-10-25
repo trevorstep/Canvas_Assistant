@@ -68,7 +68,19 @@ function prioritize(assignments) {
 
 
 
-// Written with help from ChatGPT
+    // Opens a new popup window for the chat interface
+    const otherBtn = document.getElementById("other");
+
+    otherBtn.addEventListener("click", () => {
+      window.open(
+        chrome.runtime.getURL("chat.html"),
+        "AI Chat",
+        "width=450,height=300,resizable=no"
+      );
+    });
+
+
+
 document.getElementById('fetch').addEventListener('click', async () => {
     const list = document.getElementById('assignments');
     list.innerHTML = 'Loading...';
