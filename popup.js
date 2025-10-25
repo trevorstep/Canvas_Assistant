@@ -69,9 +69,6 @@ function prioritize(assignments) {
 
 
 
-
-
-
 document.getElementById('fetch').addEventListener('click', async () => {
     const list = document.getElementById('assignments');
     list.innerHTML = 'Loading...';
@@ -80,9 +77,44 @@ document.getElementById('fetch').addEventListener('click', async () => {
         const assignments = await fetchAssignments();
         const prioritized = prioritize(assignments);
         list.innerHTML = '';
+
         prioritized.forEach(a => {
             const li = document.createElement('li');
-            li.textContent = `${a.name} — due ${new Date(a.due_at).toLocaleString()}`;
+            li.className = 'assignment-item';
+            li.innerHTML = `
+                <strong>${a.name}</strong> — due ${new Date(a.due_at).toLocaleString()}
+                <button class="summarize-btn">Summarize Assignment</button>
+                <div class="summary"></div>
+            `;
+
+            const summarizeBtn = li.querySelector('.summarize-btn');
+            const summaryDiv = li.querySelector('.summary');
+
+            summarizeBtn.addEventListener('click', async () => {
+                summarizeBtn.disabled = true;
+                summarizeBtn.textContent = "Summarizing…";
+
+                try {
+                    const token = await getToken();
+                    const base = 'https://byui.instructure.com';
+                    const detailRes = await fetch(`${base}/api/v1/courses/${a.course_id}/assignments/${a.id}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    const details = await detailRes.json();
+
+                    const desc = details.description?.replace(/<[^>]+>/g, '') || "(No description)";
+                    const answer = await summarize(desc);
+                    summaryDiv.textContent = stripMarkdown(answer);
+
+                } catch (e) {
+                    summaryDiv.textContent = "Error summarizing assignment.";
+                    console.error(e);
+                } finally {
+                    summarizeBtn.disabled = false;
+                    summarizeBtn.textContent = "Summarize Assignment";
+                }
+            });
+
             list.appendChild(li);
         });
     } catch (err) {
