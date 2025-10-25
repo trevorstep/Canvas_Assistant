@@ -64,15 +64,13 @@ function prioritize(assignments) {
             chatContainer.classList.toggle("hidden");
           });
         }
-      });
 
     document.getElementById('user-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         document.getElementById('send-btn').click(); // Trigger the send button
     }
     });
-    
-      document.addEventListener('DOMContentLoaded', () => {
+
         const checkbox = document.getElementById('textNotifyCheckbox');
         const phoneContainer = document.getElementById('phoneInputContainer');
         const saveButton = document.getElementById('savePhoneBtn');
@@ -80,6 +78,7 @@ function prioritize(assignments) {
         const saveStatus = document.getElementById('saveStatus');
       
         // Show/hide phone input when checkbox is toggled
+        if (checkbox && phoneContainer) {
         checkbox.addEventListener('change', () => {
           if (checkbox.checked) {
             phoneContainer.classList.remove('hidden');
@@ -87,8 +86,10 @@ function prioritize(assignments) {
             phoneContainer.classList.add('hidden');
           }
         });
+        }
       
         // Handle save button click
+        if (saveButton && phoneInput && saveStatus) {
         saveButton.addEventListener('click', async () => {
           const phone = phoneInput.value.trim();
       
@@ -120,7 +121,7 @@ function prioritize(assignments) {
             saveStatus.style.color = "red";
           }
         });
-      });
+        }
       
 
 document.getElementById('fetch').addEventListener('click', async () => {
@@ -186,20 +187,6 @@ document.getElementById('fetch').addEventListener('click', async () => {
 });
 
 
-
-async function extractPageText() {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const [{ result }] = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => {
-            const el = document.querySelector('#content.ic-Layout-contentMain[role="main"]');
-            return el ? el.innerText.slice(0, 20000) : '';
-        }
-    });
-    return result;
-}
-
-
 document.getElementById('summarize').addEventListener('click', async () => {
     try {
         const text = await extractPageText();
@@ -213,6 +200,46 @@ document.getElementById('summarize').addEventListener('click', async () => {
         alert("Error: " + e.message);
     }
 });
+
+document.getElementById("other").addEventListener("click", () => {
+    const chatContainer = document.getElementById("chat-container");
+  
+    // Toggle visibility (show/hide)
+    chatContainer.classList.toggle("active");
+  
+    // Optional: focus the input when opened
+    if (chatContainer.classList.contains("active")) {
+      document.getElementById("user-input").focus();
+    }
+  });
+  
+  document.getElementById('send-btn').addEventListener('click', async () => {
+    try {
+        const text = document.getElementById("user-input").value;
+
+        const answer = await otherGeminiQuestion(text);
+        alert(answer);
+        // document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
+    } catch (e) {
+        console.error(e);
+        document.getElementById('summary').innerText = "Error: " + e.message;
+        alert("Error: " + e.message);
+    }
+});
+      });
+
+
+async function extractPageText() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const [{ result }] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+            const el = document.querySelector('#content.ic-Layout-contentMain[role="main"]');
+            return el ? el.innerText.slice(0, 20000) : '';
+        }
+    });
+    return result;
+}
 
 async function askGemini(prompt) {
     const res = await fetch(AI_ENDPOINT, {
@@ -247,18 +274,6 @@ async function otherGeminiQuestion(prompt) {
     return await askGemini(`You are an AI assistant for the educational website Canvas. Here the information about the web page they are on:${await extractPageText()}. Here are their assignments: ${fetchedAssignments}. The date and time is ${now.toString()}Here is their current question: \n\n${prompt}`);
 }
 
-document.getElementById("other").addEventListener("click", () => {
-    const chatContainer = document.getElementById("chat-container");
-  
-    // Toggle visibility (show/hide)
-    chatContainer.classList.toggle("active");
-  
-    // Optional: focus the input when opened
-    if (chatContainer.classList.contains("active")) {
-      document.getElementById("chat-input").focus();
-    }
-  });
-  
 async function typewriter(text) {
   const output = document.createElement("div");
   output.style.fontFamily = "monospace";
@@ -271,18 +286,3 @@ async function typewriter(text) {
     await new Promise(resolve => setTimeout(resolve, 100));
   }
 }
-
-
-  document.getElementById('send-btn').addEventListener('click', async () => {
-    try {
-        const text = document.getElementById("user-input").value;
-
-        const answer = await otherGeminiQuestion(text);
-        alert(answer);
-        // document.getElementById('summary').innerText = stripMarkdown(answer) || "(No answer)";
-    } catch (e) {
-        console.error(e);
-        document.getElementById('summary').innerText = "Error: " + e.message;
-        alert("Error: " + e.message);
-    }
-});
