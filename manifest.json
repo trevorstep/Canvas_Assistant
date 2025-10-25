@@ -22,11 +22,7 @@
         "default_popup": "popup.html",
         "default_title": "Canvas Helper"
     },
-    "submission": {
-        "submitted_at": "2025-10-23T20:45:31Z",
-        "workflow_state": "graded",
-        "score": 9.5
-    },
+
     "commands": {
         "_execute_action": {
             "suggested_key": {
